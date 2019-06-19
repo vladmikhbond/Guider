@@ -29,7 +29,7 @@
 })
 export class MapComponent {
 
-    imageSource = "assets/map-snow.jpg";
+    imageSource = "assets/floors/1.svg";
     image: HTMLImageElement;
     scrollBox: HTMLElement;
     canvas: HTMLCanvasElement;

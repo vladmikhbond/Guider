@@ -11,7 +11,8 @@ import { DashboardComponent }   from './dashboard.component';
 // определение маршрутов
 const appRoutes: Routes =[
     { path: '', component: MapComponent},
-    // { path: 'about', component: AboutComponent},
+    { path: 'map', component: MapComponent},
+    { path: 'about', component: AboutComponent},
     // { path: '**', component: DashboardComponent }
 ];
  

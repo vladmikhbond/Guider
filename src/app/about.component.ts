@@ -1,7 +1,10 @@
 ﻿import { Component} from '@angular/core';
   
 @Component({
-    selector: 'about-app',
-    template: `<h3>О сайте</h3>`
+    selector: 'about',
+    template: `<h3>О сайте</h3>
+    <a routerLink="/map">map</a>
+
+    `
 })
 export class AboutComponent { }

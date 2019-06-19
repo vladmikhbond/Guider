@@ -11,7 +11,7 @@
     }
     `],
     template: `<div>
-        <h1>Dashboard</h1>
+            <a routerLink="/about">about</a>
     </div>
     `
 })

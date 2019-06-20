@@ -1,4 +1,4 @@
-﻿import {Component, HostListener} from '@angular/core';
+﻿import {Component, HostListener, Input} from '@angular/core';
 
 @Component({
      selector: 'map',
@@ -36,6 +36,9 @@ export class MapComponent {
     ctx: CanvasRenderingContext2D;
     scrollX = 0;
     scrollY = 0;
+    _scale = 1;
+    _path: number[] = [];
+
 
     init(): void {
         this.image = <HTMLImageElement>document.getElementById("img");
@@ -59,11 +62,30 @@ export class MapComponent {
         this.scrollX = (<any>e.target).scrollLeft | 0;
     }
 
-    scale(k: number) {
+    @Input()
+    set scale(flag: boolean) {
+        let k: number = flag ? 1.2 : 1/1.2;
+        this._scale *= k;
         this.canvas.width *= k;
         this.canvas.height *= k;
         this.ctx.drawImage(this.image,
             0, 0, this.image.width, this.image.height,
             0, 0, this.canvas.width, this.canvas.height);
     }
+
+    // binding to setter
+    @Input()
+    set path(arr: number[]) {
+        if(arr.length == 0)
+            alert("error");
+        else {
+            this._path = arr;
+            alert(arr);
+        }
+    }
+
+
+
+
+
 }

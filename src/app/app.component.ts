@@ -3,10 +3,22 @@
 @Component({
     selector: 'my-app',
     template: `
-        <dash></dash>
-     
-        <router-outlet></router-outlet>
+        <dash (onScaled)="onScaled($event)"></dash>
+        <map [scale]="incresed" > </map>
     
     `
+     
+    //    <router-outlet></router-outlet>
+    
+
 })
-export class AppComponent {}
+export class AppComponent {
+
+    incresed: boolean;
+    onScaled(flag: boolean){
+        this.incresed = flag;
+
+
+    }
+
+}

@@ -74,6 +74,9 @@ export class MapComponent {
         this.redraw();
     }
 
+    get scale() {
+        return this._scale;
+    }
 
     set path(arr: number[]) {
         this._path = arr;
@@ -81,7 +84,7 @@ export class MapComponent {
     }
 
 
-    step(x: string) {
+    doStep(x: string) {
         this.drawPath();
         alert(x);
     }

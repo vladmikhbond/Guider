@@ -1,6 +1,8 @@
 ﻿import { Component,  ViewChild} from '@angular/core';
 import {MapComponent} from './map.component';
 
+const SCALE_FACTOR = 1.2;
+
 @Component({
 
     selector: 'my-app',
@@ -10,9 +12,7 @@ import {MapComponent} from './map.component';
             height: 50px;
             background-color: rgb(255, 228, 196);
             margin: 0;
-
         }
-
         button {
             width: 50px;
             height: 50px;
@@ -36,8 +36,8 @@ export class AppComponent {
     child: MapComponent;
 
     _scale = 1;
-    change(flag: boolean) {
-        this._scale *= flag ? 1.2 : 1/1.2;
+    change(increase: boolean) {
+        this._scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
         this.child.scale = this._scale;
     }
 
@@ -46,11 +46,14 @@ export class AppComponent {
     }
 
     step() {
-        this.child.step("12345");
+        this.child.doStep("12345");
     }
 
     help() {
-       alert("help");
+        if (this.child.scale != this._scale)
+           this.child.scale = this._scale;
+        else
+            this.child.scale = 0;
     }
 
 }

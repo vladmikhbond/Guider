@@ -6,8 +6,7 @@ import {Routes, RouterModule} from '@angular/router';
 import { AppComponent }   from './app.component';
 import { AboutComponent }   from './about.component';
 import { MapComponent }   from './map.component';
-import { DashboardComponent }   from './dashboard.component';
- 
+
 // определение маршрутов
 const appRoutes: Routes =[
     { path: '', component: MapComponent},
@@ -18,7 +17,7 @@ const appRoutes: Routes =[
  
 @NgModule({
     imports:      [ BrowserModule, RouterModule.forRoot(appRoutes)],
-    declarations: [ AppComponent, MapComponent, AboutComponent, DashboardComponent],
+    declarations: [ AppComponent, MapComponent, AboutComponent],
     bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

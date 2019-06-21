@@ -1,10 +1,10 @@
-﻿import {Component, HostListener, Input} from '@angular/core';
+﻿import {Component, Input} from '@angular/core';
 
 @Component({
      selector: 'map',
      styles: [`         
          canvas { 
-            border: 1px lightgray solid
+            border: 1px lightgray solid;
          }
          #info {
              height:50px;width:100%;
@@ -14,13 +14,7 @@
              overflow:auto;
          }
      `],
-     template: `
-         <div id="info">
-             <button (click)="scale(1.2)">+</button>
-             <button (click)="scale(1/1.2)">-</button>
-             <span>x0={{scrollX}} </span>
-             <span> y0={{scrollY}}</span>
-         </div>
+     template: `         
          <div id="scrollBox" (scroll)="onScroll($event)">
              <canvas id="canvas"></canvas>
          </div>
@@ -30,61 +24,68 @@
 export class MapComponent {
 
     imageSource = "assets/floors/1.svg";
-    image: HTMLImageElement;
-    scrollBox: HTMLElement;
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
-    scrollX = 0;
-    scrollY = 0;
-    _scale = 1;
-    _path: number[] = [];
+
+    private _image: HTMLImageElement;
+    private _scrollBox: HTMLElement;
+    private _canvas: HTMLCanvasElement;
+    private _ctx: CanvasRenderingContext2D;
+
+    // back fields for props
+    private _scale = 1;
+    private _path: number[] = [];
 
 
     init(): void {
-        this.image = <HTMLImageElement>document.getElementById("img");
+        this._image = <HTMLImageElement>document.getElementById("img");
         // scrollBox size
-        this.scrollBox = document.getElementById("scrollBox");
-        let h = window.screen.height - 100;
-        this.scrollBox.style.height = `${h}px`;
+        this._scrollBox = document.getElementById("scrollBox");
+
+        this._scrollBox.style.height = `${window.screen.height - 100}px`;
         // canvas size
-        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.canvas.width = this.image.width;
-        this.canvas.height = this.image.height;
+        this._canvas = <HTMLCanvasElement>document.getElementById("canvas");
+        this._canvas.width = this._image.width * this._scale;
+        this._canvas.height = this._image.height * this._scale;
         // draw image
-        this.ctx = this.canvas.getContext("2d");
-        this.ctx.drawImage(this.image,
-            0, 0, this.image.width, this.image.height,
-            0, 0, this.canvas.width, this.canvas.height);
+        this._ctx = this._canvas.getContext("2d");
+        this._ctx.drawImage(this._image,
+            0, 0, this._image.width, this._image.height,
+            0, 0, this._canvas.width, this._canvas.height);
+        this.drawPath();
     }
 
-    onScroll(e: Event) {
-        this.scrollY = (<any>e.target).scrollTop | 0;
-        this.scrollX = (<any>e.target).scrollLeft | 0;
-    }
+    // scrollX = 0;
+    // scrollY = 0;
+
+    // onScroll(e: Event) {
+    //     this.scrollY = (<any>e.target).scrollTop | 0;
+    //     this.scrollX = (<any>e.target).scrollLeft | 0;
+    // }
 
     @Input()
-    set scale(flag: boolean) {
-        let k: number = flag ? 1.2 : 1/1.2;
-        this._scale *= k;
-        this.canvas.width *= k;
-        this.canvas.height *= k;
-        this.ctx.drawImage(this.image,
-            0, 0, this.image.width, this.image.height,
-            0, 0, this.canvas.width, this.canvas.height);
+    set scale(v: number) {
+       this._scale = v;
+       this.init();
     }
 
-    // binding to setter
     @Input()
     set path(arr: number[]) {
-        if(arr.length == 0)
-            alert("error");
-        else {
-            this._path = arr;
-            alert(arr);
-        }
+        this._path = arr;
+        this.drawPath();
     }
 
 
+    f(x: string) {
+        alert(x);
+    }
+
+    drawPath() {
+        let k = this._scale;
+        this._ctx.beginPath();
+        this._ctx.moveTo(this._path[0] * k , this._path[1] * k)
+        for (let i = 2; i < this._path.length; i += 2)
+            this._ctx.lineTo(this._path[i] * k, this._path[i+1] * k);
+        this._ctx.stroke();
+    }
 
 
 

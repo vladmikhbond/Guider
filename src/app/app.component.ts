@@ -9,26 +9,54 @@ const SCALE_FACTOR = 1.2;
     styles: [`
         #dash {
             width: 100%;
+            min-width: 320px;
+            text-align: center;
+            vertical-align: center;
             height: 50px;
-            background-color: rgb(255, 228, 196);
+            background-color: lightblue;
             margin: 0;
+            
+        }
+
+        mat-form-field {
+            width: 60px;
+            height: 50px;
+            background-color: aqua;
+            border: solid thin lightblue;
         }
         button {
+            min-width: 50px;
             width: 50px;
             height: 50px;
+            padding: 0;
+            background-color: aqua;
         }
+        
     `],
     template: `
         <div id="dash">
-            <button (click)="go()">Start</button>
-            <button (click)="go()">Go</button>
-            <button (click)="step()">Step</button>
-            <button (click)="change(true)">+</button>
-            <button (click)="change(false)">-</button>
-            <button (click)="help()">Help</button>
+            <mat-form-field>
+                <mat-select (valueChange)="start($event)" sele>
+                    <mat-option *ngFor="let tag of tags" [value]="tag"  >
+                        {{tag}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select  (valueChange)="go($event)">
+                    <mat-option *ngFor="let tag of tags" [value]="tag">
+                        {{tag}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+            <button mat-stroked-button (click)="step()">Step</button>
+            <button mat-stroked-button (click)="change(true)">+</button>
+            <button mat-stroked-button (click)="change(false)">-</button>
+            <button mat-stroked-button (click)="help()">Help</button>
         </div>
-        <map></map>  
-        `
+        <map></map>`
+
 })
 export class AppComponent {
 
@@ -41,7 +69,11 @@ export class AppComponent {
         this.child.scale = this._scale;
     }
 
-    go() {
+    start(value: string) {
+        alert(value);
+    }
+
+    go(value: string) {
         this.child.path = [1, 1, 100, 1, 100, 100];
     }
 
@@ -55,5 +87,11 @@ export class AppComponent {
         else
             this.child.scale = 0;
     }
+
+    tags: string[] = [ '111', '222', '333'];
+
+
+
+
 
 }

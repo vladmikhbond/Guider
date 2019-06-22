@@ -1,7 +1,8 @@
 ﻿import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
- 
 import {Routes, RouterModule} from '@angular/router';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatButtonModule, MatSelectModule} from '@angular/material';
  
 import { AppComponent }   from './app.component';
 import { AboutComponent }   from './about.component';
@@ -16,7 +17,7 @@ const appRoutes: Routes =[
 ];
  
 @NgModule({
-    imports:      [ BrowserModule, RouterModule.forRoot(appRoutes)],
+    imports: [BrowserModule, RouterModule.forRoot(appRoutes), BrowserAnimationsModule, MatButtonModule, MatSelectModule],
     declarations: [ AppComponent, MapComponent, AboutComponent],
     bootstrap:    [ AppComponent ]
 })

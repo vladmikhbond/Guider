@@ -11,6 +11,7 @@ const DASH_HEIGHT = 50;
 
         #scrollBox {
             width: 100%;
+            min-width: 320px;
             overflow: auto;
         }
     `],
@@ -56,10 +57,10 @@ export class MapComponent {
     }
 
 
-    // onScroll(e: Event) {
-    //     this.scrollY = (<any>e.target).scrollTop | 0;
-    //     this.scrollX = (<any>e.target).scrollLeft | 0;
-    // }
+    onScroll(e: Event) {
+        let scrollY = (<any>e.target).scrollTop | 0;
+        let scrollX = (<any>e.target).scrollLeft | 0;
+    }
 
 
     set scale(newScale: number) {

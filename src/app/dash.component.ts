@@ -33,7 +33,7 @@ const SCALE_FACTOR = 1.2;
     template: `
         <div id="dash">
             <mat-form-field>
-                <mat-select (valueChange)="from($event)" sele>
+                <mat-select (valueChange)="from($event)" >
                     <mat-option *ngFor="let tag of tags" [value]="tag">
                         {{tag}}
                     </mat-option>
@@ -82,8 +82,7 @@ export class DashComponent {
     }
 
     to(toTag: string) {
-        let path = this.dataService.getPath(this.fromTag, toTag)
-        this.child.path = path;
+        this.child.path = this.dataService.getPath(this.fromTag, toTag);
     }
 
     step() {
@@ -91,15 +90,7 @@ export class DashComponent {
     }
 
     help() {
-        if (this.child.scale != this.scale)
-           this.child.scale = this.scale;
-        else
-            this.child.scale = 0;
+        this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
     }
-
-
-
-
-
 
 }

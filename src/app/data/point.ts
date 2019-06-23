@@ -1,18 +1,21 @@
+const K = 1000;
 export class Point
 {
     x: number;
     y: number;
-    z: number;
+    z: number;   // floor - from 0 to 4
     tags: string[];
 
     constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
-        this.z = z | 0;
+        this.z = z;
+        this.tags = []
     }
 
     get id(): number {
-       return this.z * 1000000 + (this.x | 0) * 1000 + (this.y | 0);
+
+        return this.z * K * K + (this.x | 0) * K + (this.y | 0);
     }
 
 }

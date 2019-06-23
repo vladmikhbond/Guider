@@ -1,7 +1,4 @@
-﻿import { Component,  ViewChild} from '@angular/core';
-import {MapComponent} from './map.component';
-
-const SCALE_FACTOR = 1.2;
+﻿import { Component} from '@angular/core';
 
 @Component({
 

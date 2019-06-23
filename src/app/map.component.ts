@@ -1,4 +1,5 @@
 ﻿import {Component} from '@angular/core';
+import {Point} from './data/point';
 
 const DASH_HEIGHT = 50;
 
@@ -26,32 +27,30 @@ export class MapComponent {
 
     imageSource = "assets/floors/1.svg";
 
-    _image: HTMLImageElement;
+    _bgImage: HTMLImageElement;
     _scrollBox: HTMLElement;
     _canvas: HTMLCanvasElement;
     _ctx: CanvasRenderingContext2D;
 
     // back fields for props
     _scale = 1;
-    _path: number[] = [];
-
-
+    _path: Point[] = [];
 
     redraw(): void {
-        this._image = <HTMLImageElement>document.getElementById("img");
+        this._bgImage = <HTMLImageElement>document.getElementById("img");
         // scrollBox size
         this._scrollBox = document.getElementById("scrollBox");
         this._scrollBox.style.height = `${screen.height - DASH_HEIGHT}px`;
 
         // canvas size
         this._canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this._canvas.width = this._image.width * this._scale;
-        this._canvas.height = this._image.height * this._scale;
+        this._canvas.width = this._bgImage.width * this._scale;
+        this._canvas.height = this._bgImage.height * this._scale;
 
         // draw image
         this._ctx = this._canvas.getContext("2d");
-        this._ctx.drawImage(this._image,
-            0, 0, this._image.width, this._image.height,
+        this._ctx.drawImage(this._bgImage,
+            0, 0, this._bgImage.width, this._bgImage.height,
             0, 0, this._canvas.width, this._canvas.height);
         this.drawPath();
     }
@@ -79,7 +78,7 @@ export class MapComponent {
         return this._scale;
     }
 
-    set path(arr: number[]) {
+    set path(arr: Point[]) {
         this._path = arr;
         this.drawPath();
     }
@@ -93,9 +92,9 @@ export class MapComponent {
     private drawPath() {
         const k = this._scale;
         this._ctx.beginPath();
-        this._ctx.moveTo(this._path[0] * k, this._path[1] * k);
-        for (let i = 2; i < this._path.length; i += 2) {
-            this._ctx.lineTo(this._path[i] * k, this._path[i + 1] * k);
+        this._ctx.moveTo(this._path[0].x * k, this._path[0].y * k);
+        for (let i = 1; i < this._path.length; i ++) {
+            this._ctx.lineTo(this._path[i].x * k, this._path[i].y * k);
         }
         this._ctx.stroke();
     }

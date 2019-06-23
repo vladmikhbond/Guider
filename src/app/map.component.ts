@@ -35,19 +35,19 @@ export class MapComponent {
     floorNo: number = 1;
 
     redraw(): void {
-        let img: HTMLImageElement;
+
         // fill array of images
         this.bgImages = [];
         for (let i = 1; i <= 5; i++ ) {
-            img = <HTMLImageElement>document.getElementById("floor" + i);
-            this.bgImages.push(img);
+            let im = <HTMLImageElement>document.getElementById("floor" + i);
+            this.bgImages.push(im);
         }
 
         // scrollBox size
         this.scrollBox = document.getElementById("scrollBox");
         this.scrollBox.style.height = `${screen.height - DASH_HEIGHT}px`;
 
-        img = this.currentFloor;
+        let img = this.currentFloor;
         // canvas size
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.canvas.width = img.width * this.scaleFld;
@@ -70,7 +70,6 @@ export class MapComponent {
 
 
     set scale(newScale: number) {
-
         const k = newScale / this.scaleFld;
         const w = screen.width / 2;
         const h = (screen.height - DASH_HEIGHT) / 2;

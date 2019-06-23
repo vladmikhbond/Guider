@@ -53,11 +53,11 @@ const SCALE_FACTOR = 1.2;
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
         <map></map>
-        <img id="img" [src]="'assets/floors/1.svg'" (load)="redraw()" hidden alt="floor1"/>
-        <img id="img" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
-        <img id="img" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
-        <img id="img" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
-        <img id="img" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>`
+        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.redraw()" hidden alt="floor1"/>
+        <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
+        <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
+        <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
+        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>`
 })
 export class DashComponent {
 

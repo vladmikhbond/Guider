@@ -20,38 +20,43 @@ const DASH_HEIGHT = 50;
         <div id="scrollBox" (scroll)="onScroll($event)">
             <canvas id="canvas"></canvas>
         </div>
-
-        <img id="img" [src]="imageSource" (load)="redraw()" hidden alt="floor"/>`
+        `
 })
 export class MapComponent {
 
-    imageSource = "assets/floors/1.svg";
-
-    _bgImage: HTMLImageElement;
-    _scrollBox: HTMLElement;
-    _canvas: HTMLCanvasElement;
-    _ctx: CanvasRenderingContext2D;
+    bgImages: HTMLImageElement[];
+    scrollBox: HTMLElement;
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
 
     // back fields for props
     _scale = 1;
     _path: Point[] = [];
+    floor: number = 1;
 
     redraw(): void {
-        this._bgImage = <HTMLImageElement>document.getElementById("img");
-        // scrollBox size
-        this._scrollBox = document.getElementById("scrollBox");
-        this._scrollBox.style.height = `${screen.height - DASH_HEIGHT}px`;
+        //
+        this.bgImages = [null];
+        for (let i = 1; i < 6; i++ ) {
+            let img = <HTMLImageElement>document.getElementById("floor" + i);
+            this.bgImages.push(img);
+        }
 
+        // scrollBox size
+        this.scrollBox = document.getElementById("scrollBox");
+        this.scrollBox.style.height = `${screen.height - DASH_HEIGHT}px`;
+
+        let img = this.bgImages[this.floor];
         // canvas size
-        this._canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this._canvas.width = this._bgImage.width * this._scale;
-        this._canvas.height = this._bgImage.height * this._scale;
+        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
+        this.canvas.width = img.width * this._scale;
+        this.canvas.height = img.height * this._scale;
 
         // draw image
-        this._ctx = this._canvas.getContext("2d");
-        this._ctx.drawImage(this._bgImage,
-            0, 0, this._bgImage.width, this._bgImage.height,
-            0, 0, this._canvas.width, this._canvas.height);
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.drawImage(img,
+            0, 0, img.width, img.height,
+            0, 0, this.canvas.width, this.canvas.height);
         this.drawPath();
     }
 
@@ -67,8 +72,8 @@ export class MapComponent {
         const k = newScale / this._scale;
         const w = screen.width / 2;
         const h = (screen.height - DASH_HEIGHT) / 2;
-        this._scrollBox.scrollLeft = (this._scrollBox.scrollLeft + w) * k - w;
-        this._scrollBox.scrollTop = (this._scrollBox.scrollTop + h) * k - h;
+        this.scrollBox.scrollLeft = (this.scrollBox.scrollLeft + w) * k - w;
+        this.scrollBox.scrollTop = (this.scrollBox.scrollTop + h) * k - h;
 
         this._scale = newScale;
         this.redraw();
@@ -83,20 +88,21 @@ export class MapComponent {
         this.drawPath();
     }
 
-
     doStep(x: string) {
         this.drawPath();
         alert(x);
     }
 
     private drawPath() {
+        if (this._path.length === 0)
+            return;
         const k = this._scale;
-        this._ctx.beginPath();
-        this._ctx.moveTo(this._path[0].x * k, this._path[0].y * k);
+        this.ctx.beginPath();
+        this.ctx.moveTo(this._path[0].x * k, this._path[0].y * k);
         for (let i = 1; i < this._path.length; i ++) {
-            this._ctx.lineTo(this._path[i].x * k, this._path[i].y * k);
+            this.ctx.lineTo(this._path[i].x * k, this._path[i].y * k);
         }
-        this._ctx.stroke();
+        this.ctx.stroke();
     }
 
 

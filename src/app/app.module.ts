@@ -5,23 +5,25 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatSelectModule} from '@angular/material';
  
 import { AppComponent }   from './app.component';
-import { StubComponent }   from './stub.component';
-import { MapComponent }   from './map.component';
-import {DashComponent} from "./dash.component";
+// import { StubComponent }   from './stub.component';
+import {MapComponent}   from './map.component';
+import {GuiderComponent} from "./guider.component";
+import {EditorComponent} from "./editor.component";
+import {EditorDashComponent} from "./editorDash.component";
 
-import {DataService} from './data/data.service';
+import {GuiderService} from './data/guider.service';
 
 // определение маршрутов
 const appRoutes: Routes =[
-    { path: '', component: DashComponent},
-    { path: 'stub', component: StubComponent},
+    { path: '', component: EditorComponent},
+    { path: 'g', component: GuiderComponent},
     // { path: '**', component: DashboardComponent }
 ];
  
 @NgModule({
     imports: [BrowserModule, RouterModule.forRoot(appRoutes), BrowserAnimationsModule, MatButtonModule, MatSelectModule],
-    declarations: [AppComponent, DashComponent, MapComponent, StubComponent],
-    providers: [DataService],
+    declarations: [AppComponent, GuiderComponent, MapComponent, EditorComponent, EditorDashComponent],
+    providers: [GuiderService],
     bootstrap:    [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,6 @@
 import {Point} from "./point";
 
-export class DataService{
+export class GuiderService{
 
 
     //

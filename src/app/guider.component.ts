@@ -1,11 +1,11 @@
 ﻿import { Component,  ViewChild} from '@angular/core';
 import {MapComponent} from './map.component';
-import {DataService} from './data/data.service';
+import {GuiderService} from './data/guider.service';
 
 const SCALE_FACTOR = 1.2;
 
 @Component({
-    selector: 'dash',
+    selector: 'guider',
     styles: [`
         #dash {
             width: 100%;
@@ -53,14 +53,14 @@ const SCALE_FACTOR = 1.2;
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
         <map></map>
-        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.redraw()" hidden alt="floor1"/>
+        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.init()" hidden alt="floor1"/>
         <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
         <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
         <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
         <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>`
 })
-export class DashComponent {
-
+export class GuiderComponent
+{
     @ViewChild(MapComponent, {static: false})
     child: MapComponent;
 
@@ -68,7 +68,7 @@ export class DashComponent {
     tags: string[];
     fromTag: string;
 
-    constructor(private dataService: DataService){
+    constructor(private dataService: GuiderService){
         this.tags = dataService.getTags();
     }
 

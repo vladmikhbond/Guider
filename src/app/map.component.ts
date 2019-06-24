@@ -7,7 +7,6 @@ const DASH_HEIGHT = 50;
     selector: 'map',
     styles: [`
         canvas {
-            border: 1px lightgray solid;
         }
 
         #scrollBox {
@@ -65,8 +64,8 @@ export class MapComponent {
 
 
     onScroll(e: Event) {
-        let scrollY = (<HTMLElement>e.target).scrollTop;
-        let scrollX = (<HTMLElement>e.target).scrollLeft;
+        let scrollY = (<HTMLElement>e.target).scrollTop | 0;
+        let scrollX = (<HTMLElement>e.target).scrollLeft | 0;
         console.log(scrollX, scrollY);
     }
 

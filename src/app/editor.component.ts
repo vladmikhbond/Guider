@@ -1,16 +1,18 @@
 ﻿import {Component} from '@angular/core';
 //import {Point} from './data/point';
-import {EditorService} from "./data/editor.service";
+//import {EditorService} from "./data/editor.service";
 
 const DASH_HEIGHT = 50;
+const INFO_HEIGHT = 30;
 
 @Component({
     selector: 'editor',
     styles: [`
         canvas {
-            border: 1px lightgray solid;
         }
-
+        #info {
+            height: 30px;
+        }
         #scrollBox {
             width: 100%;
             min-width: 320px;
@@ -19,9 +21,9 @@ const DASH_HEIGHT = 50;
     `],
     template: `
         <editor-dash (onScaled)="dash_Scaled($event)" (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
-
+        <div id="info">{{info}}</div>
         <div id="scrollBox" (scroll)="onScroll($event)">
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" (mousemove)="mousemove($event)"></canvas>
         </div>
 
         <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
@@ -40,6 +42,7 @@ export class EditorComponent {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
 
+    info: string = "123";
     // back fields for props
     scaleField = 1;
     currentFloorIndex = 0;
@@ -58,7 +61,7 @@ export class EditorComponent {
         }
         // set scrollBox size
         this.scrollBox = document.getElementById("scrollBox");
-        this.scrollBox.style.height = `${screen.height - DASH_HEIGHT}px`;
+        this.scrollBox.style.height = `${screen.height - DASH_HEIGHT - INFO_HEIGHT}px`;
         this.redraw();
     }
 
@@ -81,7 +84,7 @@ export class EditorComponent {
     onScroll(e: Event) {
         let scrollY = (<HTMLElement>e.target).scrollTop;
         let scrollX = (<HTMLElement>e.target).scrollLeft;
-        console.log(scrollX, scrollY);
+        //console.log(scrollX, scrollY);
     }
 
     // props ////////////////////////////////////
@@ -103,6 +106,13 @@ export class EditorComponent {
 
     get currentFloor() {
         return this.bgImages[this.currentFloorIndex];
+    }
+
+    // this event handlers ///////////////////////
+    mousemove(e: MouseEvent) {
+        let x = Math.round(e.offsetX / this.scaleField);
+        let y = Math.round(e.offsetY / this.scaleField);
+        this.info = `${x}  ${y}`;
     }
 
 

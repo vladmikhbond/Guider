@@ -37,7 +37,7 @@ export class MapComponent {
     init() {
         // fill array of images
         this.bgImages = [];
-        for (let i = 1; i <= 5; i++ ) {
+        for (let i = 1; i <= 6; i++ ) {
             let im = <HTMLImageElement>document.getElementById("floor" + i);
             this.bgImages.push(im);
         }

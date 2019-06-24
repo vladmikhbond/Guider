@@ -57,7 +57,9 @@ const SCALE_FACTOR = 1.2;
         <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
         <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
         <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
-        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>`
+        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
+        <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
+    `
 })
 export class GuiderComponent
 {
@@ -68,8 +70,8 @@ export class GuiderComponent
     tags: string[];
     fromTag: string;
 
-    constructor(private dataService: GuiderService){
-        this.tags = dataService.getTags();
+    constructor(private guiderService: GuiderService){
+        this.tags = guiderService.getTags();
     }
 
     change(increase: boolean) {
@@ -82,7 +84,7 @@ export class GuiderComponent
     }
 
     to(toTag: string) {
-        this.child.path = this.dataService.getPath(this.fromTag, toTag);
+        this.child.path = this.guiderService.getPath(this.fromTag, toTag);
     }
 
     step() {

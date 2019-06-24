@@ -5,8 +5,8 @@ export class GuiderService{
 
     //
     getPath(fromTag: string, toTag: string): Point[] {
-        return [new Point(1, 1, 1), new Point(100, 1, 1),
-            new Point(100, 100, 1), new Point(200, 100, 1), ];
+        return [new Point(1, 1, 0), new Point(100, 1, 0),
+            new Point(100, 100, 0), new Point(200, 100, 0), ];
     }
     //
     getTags(): string[] {

@@ -1,6 +1,6 @@
 ﻿import {Component} from '@angular/core';
-//import {Point} from './data/point';
-//import {EditorService} from "./data/editor.service";
+import {Point} from './data/point';
+import {EditorService} from "./data/editor.service";
 
 const DASH_HEIGHT = 50;
 const INFO_HEIGHT = 30;
@@ -23,7 +23,7 @@ const INFO_HEIGHT = 30;
         <editor-dash (onScaled)="dash_Scaled($event)" (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
         <div id="info">{{info}}</div>
         <div id="scrollBox" (scroll)="onScroll($event)">
-            <canvas id="canvas" (mousemove)="mousemove($event)"></canvas>
+            <canvas id="canvas" (mousemove)="mousemove($event)" (mousedown)="mousedown($event)"></canvas>
         </div>
 
         <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
@@ -46,10 +46,11 @@ export class EditorComponent {
     // back fields for props
     scaleField = 1;
     currentFloorIndex = 0;
+    editorService: EditorService
 
-    // constructor(editorService: EditorService){
-    //
-    // }
+    constructor(editorService: EditorService){
+        this.editorService = editorService;
+    }
 
 
     init() {
@@ -68,16 +69,24 @@ export class EditorComponent {
 
     redraw(): void {
         let img = this.currentFloor;
+        let k = this.scaleField;
         // canvas size
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.canvas.width = img.width * this.scaleField;
-        this.canvas.height = img.height * this.scaleField;
+        this.canvas.width = img.width * k;
+        this.canvas.height = img.height * k;
 
-        // draw image
+        // draw back image
         this.ctx = this.canvas.getContext("2d");
         this.ctx.drawImage(img,
             0, 0, img.width, img.height,
             0, 0, this.canvas.width, this.canvas.height);
+        // draw points
+        this.ctx.lineWidth = 0.5;
+        for (let p of this.editorService.points) {
+            this.ctx.fillRect(p.x * k - 0.5, p.y * k - 0.5, 1, 1 );
+            this.ctx.strokeRect((p.x - 1) * k, (p.y - 1) * k, 2 * k, 2 * k );
+        }
+
     }
 
 
@@ -113,6 +122,14 @@ export class EditorComponent {
         let x = Math.round(e.offsetX / this.scaleField);
         let y = Math.round(e.offsetY / this.scaleField);
         this.info = `${x}  ${y}`;
+    }
+
+    mousedown(e: MouseEvent) {
+        let x = Math.round(e.offsetX / this.scaleField);
+        let y = Math.round(e.offsetY / this.scaleField);
+        let p = new Point(x, y, 0);
+        this.editorService.addPoint(p);
+        this.redraw();
     }
 
 

@@ -11,6 +11,7 @@ import {EditorComponent} from "./editor.component";
 import {EditorDashComponent} from "./editorDash.component";
 
 import {GuiderService} from './data/guider.service';
+import {EditorService} from './data/editor.service';
 
 // определение маршрутов
 const appRoutes: Routes =[
@@ -22,7 +23,7 @@ const appRoutes: Routes =[
 @NgModule({
     imports: [BrowserModule, RouterModule.forRoot(appRoutes), BrowserAnimationsModule, MatButtonModule, MatSelectModule],
     declarations: [AppComponent, GuiderComponent, MapComponent, EditorComponent, EditorDashComponent],
-    providers: [GuiderService],
+    providers: [GuiderService, EditorService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -20,10 +20,12 @@ const INFO_HEIGHT = 30;
         }
     `],
     template: `
-        <editor-dash (onScaled)="dash_Scaled($event)" (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
+    <div (keydown)="this_keydown($event)" tabindex="1">
+        <editor-dash (onScaled)="dash_Scaled($event)"
+                     (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
         <div id="info">{{info}}</div>
         <div id="scrollBox" (scroll)="onScroll($event)">
-            <canvas id="canvas" (mousemove)="mousemove($event)" (mousedown)="mousedown($event)"></canvas>
+            <canvas id="canvas" (mousemove)="this_mousemove($event)" (mousedown)="this_mousedown($event)"></canvas>
         </div>
 
         <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
@@ -32,6 +34,7 @@ const INFO_HEIGHT = 30;
         <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
         <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
         <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
+    </div> 
     `
 })
 export class EditorComponent {
@@ -42,11 +45,10 @@ export class EditorComponent {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
 
-    info: string = "123";
-    // back fields for props
+    info: string = "";
     scaleField = 1;
     currentFloorIndex = 0;
-    editorService: EditorService
+    editorService: EditorService;
 
     constructor(editorService: EditorService){
         this.editorService = editorService;
@@ -80,17 +82,20 @@ export class EditorComponent {
         this.ctx.drawImage(img,
             0, 0, img.width, img.height,
             0, 0, this.canvas.width, this.canvas.height);
+
         // draw points
         this.ctx.lineWidth = 0.5;
         for (let p of this.editorService.points) {
             this.ctx.fillRect(p.x * k - 0.5, p.y * k - 0.5, 1, 1 );
             this.ctx.strokeRect((p.x - 1) * k, (p.y - 1) * k, 2 * k, 2 * k );
         }
-        this.ctx.strokeStyle = 'red';
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeRect((this.editorService.selPoint.x - 1) * k, (this.editorService.selPoint.y - 1) * k, 2 * k, 2 * k );
-
-
+        if (this.editorService.selPoint) {
+            this.ctx.strokeStyle = 'red';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(
+                (this.editorService.selPoint.x - 1) * k,
+                (this.editorService.selPoint.y - 1) * k, 2 * k, 2 * k);
+        }
     }
 
 
@@ -122,22 +127,36 @@ export class EditorComponent {
     }
 
     // this event handlers ///////////////////////
-    mousemove(e: MouseEvent) {
+
+    this_mousemove(e: MouseEvent) {
         let x = Math.round(e.offsetX / this.scaleField);
         let y = Math.round(e.offsetY / this.scaleField);
         this.info = `${x}  ${y}`;
     }
 
-    mousedown(e: MouseEvent) {
+    this_mousedown(e: MouseEvent) {
         let x = Math.round(e.offsetX / this.scaleField);
         let y = Math.round(e.offsetY / this.scaleField);
-        let p = new Point(x, y, 0);
-        this.editorService.addPoint(p);
+        // if point exist
+        let near: Point = this.editorService.nearPointTo(x, y, 0);
+        if (near) {
+            this.editorService.selPoint = near;
+        } else {
+            let p = new Point(x, y, 0);
+            this.editorService.addPoint(p);
+        }
         this.redraw();
+
+
     }
 
-
-    // child event handlers ///////////////////////
+    this_keydown(e: KeyboardEvent) {
+        if (e.key == "Delete") {
+            this.editorService.deleteSepPoint();
+            this.redraw();
+        }
+    }
+    // child's event handlers ///////////////////////
 
     dash_Scaled(newScale: number) {
         this.scale = newScale;

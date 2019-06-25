@@ -2,6 +2,17 @@
 
 const SCALE_FACTOR = 1.2;
 
+/*******************************************************************************
+ *
+ * Output Events
+ * onScaleChanged()   : scale
+ * onFloorChanged()   : 0,1,2,3,4,5
+ * onModeChanged()    : horPoints, verPoints, ladders, eidges, tags
+ *
+ * Privat Properties:
+ * scale: number
+ *
+********************************************************************************/
 @Component({
     selector: 'editor-dash',
     styles: [`
@@ -31,7 +42,7 @@ const SCALE_FACTOR = 1.2;
     template: `
         <div id="dash">
             <mat-form-field>
-                <mat-select (valueChange)="floorChange($event)" >
+                <mat-select (valueChange)="floorChange($event)" [value]="0">
                     <mat-option *ngFor="let i of [1,2,3,4,5,6]" [value]="i-1">
                         {{i}}
                     </mat-option>
@@ -47,11 +58,10 @@ export class EditorDashComponent {
 
     scale = 1;
 
-
-    @Output() onScaled = new EventEmitter<number>();
+    @Output() onScaleChanged = new EventEmitter<number>();
     scaleChange(increased: boolean) {
         this.scale *= increased ? SCALE_FACTOR : 1 / SCALE_FACTOR;
-        this.onScaled.emit(this.scale);
+        this.onScaleChanged.emit(this.scale);
     }
 
     @Output() onFloorChanged = new EventEmitter<number>();

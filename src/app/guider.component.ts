@@ -1,4 +1,4 @@
-﻿import { Component,  ViewChild} from '@angular/core';
+﻿import {Component,  ViewChild} from '@angular/core';
 import {MapComponent} from './map.component';
 import {GuiderService} from './data/guider.service';
 
@@ -16,7 +16,7 @@ const SCALE_FACTOR = 1.2;
             background-color: lightblue;
             margin: 0;
         }
-        mat-form-field {
+        select {
             width: 60px;
             height: 50px;
             background-color: aqua;
@@ -32,21 +32,19 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-            <mat-form-field>
-                <mat-select (valueChange)="from($event)" >
-                    <mat-option *ngFor="let tag of tags" [value]="tag">
-                        {{tag}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-select (valueChange)="to($event)">
-                    <mat-option *ngFor="let tag of tags" [value]="tag">
-                        {{tag}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
+            
+            <select (valueChange)="from($event)">
+                <option *ngFor="let tag of tags" [value]="tag">
+                    {{tag}}
+                </option>
+            </select>
+            
+            <select (valueChange)="to($event)">
+                <option *ngFor="let tag of tags" [value]="tag">
+                    {{tag}}
+                </option>
+            </select>
+            
             <button mat-stroked-button (click)="step()">Step</button>
             <button mat-stroked-button (click)="change(true)">+</button>
             <button mat-stroked-button (click)="change(false)">-</button>

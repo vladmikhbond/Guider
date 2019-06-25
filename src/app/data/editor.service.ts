@@ -15,17 +15,17 @@ export class EditorService {
     addPoint(newPoint: Point) {
         let idx = this.indexOfPoint(newPoint);
         if (idx === -1)
-          this.points.push(newPoint);
+            this.points.push(newPoint);
         this.selPoint = newPoint;
     }
 
-    deleteSepPoint() {
+    deleteSelPoint() {
         if (this.selPoint) {
+            let ps = this.points;
             let idx = this.indexOfPoint(this.selPoint);
             if (idx != -1) {
-                this.points.splice(idx, 1);
-
-                this.selPoint = null;
+                ps.splice(idx, 1);
+                this.selPoint = ps.length == 0 ? null : ps[ps.length - 1];
             }
         }
     }

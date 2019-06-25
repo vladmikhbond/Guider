@@ -20,21 +20,21 @@ const INFO_HEIGHT = 30;
         }
     `],
     template: `
-    <div (keydown)="this_keydown($event)" tabindex="1">
-        <editor-dash (onScaled)="dash_Scaled($event)"
-                     (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
-        <div id="info">{{info}}</div>
-        <div id="scrollBox" (scroll)="onScroll($event)">
-            <canvas id="canvas" (mousemove)="this_mousemove($event)" (mousedown)="this_mousedown($event)"></canvas>
-        </div>
+        <div (keydown)="this_keydown($event)" tabindex="1">
+            <editor-dash (onScaleChanged)="dash_Scaled($event)"
+                         (onFloorChanged)="dash_FloorChanged($event)"></editor-dash>
+            <div id="info">{{info}}</div>
+            <div id="scrollBox" (scroll)="onScroll($event)">
+                <canvas id="canvas" (mousemove)="this_mousemove($event)" (mousedown)="this_mousedown($event)"></canvas>
+            </div>
 
-        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
-        <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
-        <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
-        <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
-        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
-        <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
-    </div> 
+            <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
+            <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
+            <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
+            <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
+            <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
+            <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
+        </div>
     `
 })
 export class EditorComponent {
@@ -48,10 +48,10 @@ export class EditorComponent {
     info: string = "";
     scaleField = 1;
     currentFloorIndex = 0;
-    editorService: EditorService;
+    serv: EditorService;
 
     constructor(editorService: EditorService){
-        this.editorService = editorService;
+        this.serv = editorService;
     }
 
 
@@ -85,24 +85,26 @@ export class EditorComponent {
 
         // draw points
         this.ctx.lineWidth = 0.5;
-        for (let p of this.editorService.points) {
+
+        for (let p of this.serv.points.filter(p => p.z == this.currentFloorIndex )) {
             this.ctx.fillRect(p.x * k - 0.5, p.y * k - 0.5, 1, 1 );
             this.ctx.strokeRect((p.x - 1) * k, (p.y - 1) * k, 2 * k, 2 * k );
         }
-        if (this.editorService.selPoint) {
+        // draw selected point
+        if (this.serv.selPoint && this.serv.selPoint.z == this.currentFloorIndex) {
             this.ctx.strokeStyle = 'red';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(
-                (this.editorService.selPoint.x - 1) * k,
-                (this.editorService.selPoint.y - 1) * k, 2 * k, 2 * k);
+                (this.serv.selPoint.x - 1) * k,
+                (this.serv.selPoint.y - 1) * k, 2 * k, 2 * k);
         }
     }
 
 
     onScroll(e: Event) {
-        let scrollY = (<HTMLElement>e.target).scrollTop;
-        let scrollX = (<HTMLElement>e.target).scrollLeft;
-        //console.log(scrollX, scrollY);
+        let x = (<HTMLElement>e.target).scrollLeft;
+        let y = (<HTMLElement>e.target).scrollTop;
+        this.info = `scrollX: ${x | 0}    scrollY:  ${y | 0}`;
     }
 
     // props ////////////////////////////////////
@@ -138,21 +140,19 @@ export class EditorComponent {
         let x = Math.round(e.offsetX / this.scaleField);
         let y = Math.round(e.offsetY / this.scaleField);
         // if point exist
-        let near: Point = this.editorService.nearPointTo(x, y, 0);
+        let near: Point = this.serv.nearPointTo(x, y, this.currentFloorIndex);
         if (near) {
-            this.editorService.selPoint = near;
+            this.serv.selPoint = near;
         } else {
-            let p = new Point(x, y, 0);
-            this.editorService.addPoint(p);
+            let p = new Point(x, y, this.currentFloorIndex);
+            this.serv.addPoint(p);
         }
         this.redraw();
-
-
     }
 
     this_keydown(e: KeyboardEvent) {
         if (e.key == "Delete") {
-            this.editorService.deleteSepPoint();
+            this.serv.deleteSelPoint();
             this.redraw();
         }
     }

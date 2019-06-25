@@ -5,6 +5,8 @@ export class EditorService {
 
     points: Point[] = [];
 
+    selPoint: Point = null;
+
     private indexOfPoint(point: Point) {
         let ps = this.points;
         return ps.findIndex(p => p.x === point.x && p.y === point.y && p.z === point.z);
@@ -15,6 +17,7 @@ export class EditorService {
         let idx = this.indexOfPoint(newPoint);
         if (idx === -1)
           this.points.push(newPoint);
+        this.selPoint = newPoint;
     }
 
 }

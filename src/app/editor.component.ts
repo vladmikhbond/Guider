@@ -86,6 +86,10 @@ export class EditorComponent {
             this.ctx.fillRect(p.x * k - 0.5, p.y * k - 0.5, 1, 1 );
             this.ctx.strokeRect((p.x - 1) * k, (p.y - 1) * k, 2 * k, 2 * k );
         }
+        this.ctx.strokeStyle = 'red';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect((this.editorService.selPoint.x - 1) * k, (this.editorService.selPoint.y - 1) * k, 2 * k, 2 * k );
+
 
     }
 

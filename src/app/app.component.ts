@@ -4,7 +4,7 @@
 
     selector: 'my-app',
 
-    template: `<router-outlet></router-outlet>`
+    template: `<guider></guider>`
 
 })
 export class AppComponent {

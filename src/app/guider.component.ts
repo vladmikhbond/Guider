@@ -32,26 +32,26 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-            
-            <select (valueChange)="from($event)">
+
+            <select #sel1 (change)="from(sel1.value)" >
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
-            
-            <select (valueChange)="to($event)">
+
+            <select #sel2 (change)="to(sel2.value)">
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
-            
+
             <button mat-stroked-button (click)="step()">Step</button>
             <button mat-stroked-button (click)="change(true)">+</button>
             <button mat-stroked-button (click)="change(false)">-</button>
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
         <map></map>
-        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.init()" hidden alt="floor1"/>
+        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="mapComp.init()" hidden alt="floor1"/>
         <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
         <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
         <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
@@ -62,35 +62,36 @@ const SCALE_FACTOR = 1.2;
 export class GuiderComponent
 {
     @ViewChild(MapComponent, {static: false})
-    child: MapComponent;
+    mapComp: MapComponent;
 
     scale = 1;
     tags: string[];
     fromTag: string;
 
     constructor(private guiderService: GuiderService){
-        this.tags = guiderService.getTags();
+        this.tags = guiderService.getAllTags();
     }
 
     change(increase: boolean) {
         this.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
-        this.child.scale = this.scale;
+        this.mapComp.scale = this.scale;
     }
 
     from(tag: string) {
         this.fromTag = tag;
     }
 
-    to(toTag: string) {
-        this.child.path = this.guiderService.getPath(this.fromTag, toTag);
+    to(tag: string) {
+        alert(this.fromTag +"   "+ tag);
+        this.mapComp.path = this.guiderService.getPath(this.fromTag, tag);
     }
 
     step() {
-        this.child.doStep("12345");
+        this.mapComp.doStep("12345");
     }
 
     help() {
-        this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
+        this.mapComp.scale = this.mapComp.scale == this.scale ? 0 : this.scale;
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿import {Component} from '@angular/core';
-import {Point} from './data/point';
+import {Point} from './data/data.types';
 
 const DASH_HEIGHT = 50;
 

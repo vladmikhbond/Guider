@@ -32,26 +32,26 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-
-            <select #sel1 (change)="from(sel1.value)" >
+            
+            <select #selFrom (change)="from(selFrom.value)">
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
-
-            <select #sel2 (change)="to(sel2.value)">
+            
+            <select #selTo (change)="to(selTo.value)">
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
-
+            
             <button mat-stroked-button (click)="step()">Step</button>
             <button mat-stroked-button (click)="change(true)">+</button>
             <button mat-stroked-button (click)="change(false)">-</button>
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
         <map></map>
-        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="mapComp.init()" hidden alt="floor1"/>
+        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.init()" hidden alt="floor1"/>
         <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
         <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
         <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
@@ -62,7 +62,7 @@ const SCALE_FACTOR = 1.2;
 export class GuiderComponent
 {
     @ViewChild(MapComponent, {static: false})
-    mapComp: MapComponent;
+    child: MapComponent;
 
     scale = 1;
     tags: string[];
@@ -74,7 +74,7 @@ export class GuiderComponent
 
     change(increase: boolean) {
         this.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
-        this.mapComp.scale = this.scale;
+        this.child.scale = this.scale;
     }
 
     from(tag: string) {
@@ -82,16 +82,20 @@ export class GuiderComponent
     }
 
     to(tag: string) {
-        alert(this.fromTag +"   "+ tag);
-        this.mapComp.path = this.guiderService.getPath(this.fromTag, tag);
+        let path = this.guiderService.getPath(this.fromTag, tag);
+        if (path == null)
+            alert("No path exists.")
+        else
+            this.child.path = path;
     }
 
     step() {
-        this.mapComp.doStep("12345");
+        // let path  = this.guiderService.getPath("144", "150");
+        // console.log(path);
     }
 
     help() {
-        this.mapComp.scale = this.mapComp.scale == this.scale ? 0 : this.scale;
+        this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
     }
 
 }

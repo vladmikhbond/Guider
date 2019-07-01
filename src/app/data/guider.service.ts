@@ -1,69 +1,106 @@
-import {Point, Edge} from "./data.types";
-import {obj} from "./data";
+import {Vertex} from "./vertex";
+import {data} from "./data";
 
-export class GuiderService {
+const INF = Number.MAX_SAFE_INTEGER;
 
-//////////////////////////////////////////////////////////////////////// the same as in data.service
-    points: Point[];
-    edges: Edge[];
+export class GuiderService{
 
-    selPoint: Point = null;
-    selEdge: Edge = null;
-
+    vertices: Vertex[];
 
     constructor() {
-        this.parse(obj);
+        this.parse(data);
     }
 
-    parse(obj: any) {
-        this.selPoint = this.selEdge = null;
-        // create points
-        this.points = [];
-        for (let i = 0; i < obj.points.length; i++) {
-            let p = obj.points[i];
-            let tag = obj.tags[i] == null ? "" : obj.tags[i];
-            this.points.push(new Point(p[0], p[1], p[2], tag));
+    parse(data: any) {
+        this.vertices = [];
+        // points -> this.vertices
+        for (let i = 0; i < data.points.length; i++) {
+            let p = data.points[i];
+            this.vertices.push(new Vertex(p[0], p[1], p[2], data.tags[i].trim()));
         }
-
-        // create edges
-        this.edges = [];
-        for (let a of obj.edges) {
-            let p1 = this.points.find(p => p.x == a[0] && p.y == a[1] && p.z == a[2]);
-            let p2 = this.points.find(p => p.x == a[3] && p.y == a[4] && p.z == a[5]);
-            if (p1 && p2) {
-                this.edges.push(new Edge(p1, p2));
-            } else {
-                console.error(`cannot create Edge`, a);
-            }
+        // edges -> vertex.adjacent
+        for (let arr of data.edges) {
+            let v1 = this.vertices.find(p => p.x == arr[0] && p.y == arr[1] && p.z == arr[2]);
+            let v2 = this.vertices.find(p => p.x == arr[3] && p.y == arr[4] && p.z == arr[5]);
+            v1.adjacent.push(v2);
+            v2.adjacent.push(v1);
         }
     }
-////////////////////////////////////////////////////////////////////////////
 
     getAllTags(): string[] {
-        let splitFunc = (tags:string) =>
-            tags.split(',').map(t => t.trim()).filter(t => t != "" );
-
-        let tagArrays = this.points
-            .filter(p => p.tags && p.tags != "L")
-            .map(p => splitFunc(p.tags));
-        let ts = tagArrays
-            .reduce((a, x) => a.concat(x), [])
+        return this.vertices.map(v => v.tags)
+            .filter(t => t != "L" && t != "" && t != null)
+            .map(t => t.split(',')
+                .map(x => x.trim())
+                .filter(x => x != ""))
+            .reduce((a, s) => a.concat(s), [])
             .sort();
-        return ts;
     }
 
-
-
+    vertexByTag(tag: string):Vertex  {
+        let test = (ts: string, t: string) => (',' + ts + ',').indexOf(',' + t + ',') != -1;
+        return this.vertices.find(v => test(v.tags, tag));
+    }
 
     //
-    getPath(fromTag: string, toTag: string): Point[] {
-        let e = this.edges.find(e => e.a.tags.indexOf(fromTag) > -1 || e.b.tags.indexOf(fromTag) > -1 )
+    getPath(fromTag: string, toTag: string): Vertex[] {
+        let start = this.vertexByTag(fromTag);
+        let finish = this.vertexByTag(toTag);
+        // init all vertices
+        this.vertices.forEach(v => {
+           v.isStable = false;
+           v.dist = INF;
+           v.prev = null;
+        });
 
-        return [
-            e.a, e.b,
-        ];
+        this.findPath(start, finish);
+        if (finish.prev == null)
+            return null;
+
+        // reconstruct the path
+        let path: Vertex[] = [];
+        for (let v = finish; v != start; v = v.prev) {
+            path.push(v);
+        }
+        path.push(start);
+        return path;
     }
 
+    findPath(start: Vertex, finish: Vertex): void {
+        // do start vertex the first stable
+        let stable = start;
+        stable.dist = 0;
+        stable.isStable = true;
+
+        // dijkstra iteration
+        let tempSet = [];
+        while(stable != finish) {
+            // process stable's adjacent and move any of them to tempSet
+            for(let v of stable.adjacent.filter(v => !v.isStable)) {
+                let distToStable = stable.dist + stable.distTo(v);
+                if (v.dist > distToStable) {
+                    v.dist = distToStable;
+                    v.prev = stable;
+                }
+                if (tempSet.indexOf(v) == -1) {
+                    tempSet.push(v);
+                }
+            }
+
+            // find next stable vertex in the tempSet
+            let minDist = Math.min(...tempSet.map(v => v.dist));
+            let idx = tempSet.findIndex(v => v.dist == minDist);
+
+            // no path exists
+            if (idx == -1)
+                return;
+
+            // A new stable founded
+            stable = tempSet[idx];
+            stable.isStable = true;
+            tempSet.splice(idx, 1);
+        }
+    }
 
 
 

@@ -86,7 +86,8 @@ export class GuiderComponent
     }
 
     step() {
-        this.child.doStep("12345");
+        // let path  = this.guiderService.getPath("144", "150");
+        // console.log(path);
     }
 
     help() {

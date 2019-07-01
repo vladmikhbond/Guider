@@ -1,9 +1,17 @@
 import {Vertex} from "./vertex";
 import {obj} from "./data";
 
+
+const INF = Number.MAX_SAFE_INTEGER;
+
 export class GuiderService{
 
     vertices: Vertex[];
+    vStart: Vertex;
+    vFinish: Vertex;
+
+
+
 
     constructor() {
         this.parse(obj);
@@ -40,13 +48,65 @@ export class GuiderService{
         return this.vertices.find(v => f(v.tags, tag));
     }
 
-    // stab
-    getPath(fromTag: string, toTag: string): Vertex[] {
-        let v1 = this.vertexByTag(fromTag);
-        let v2 = this.vertexByTag(toTag);
-        return [v1, v2 ];
-    }
     //
+    getPath(fromTag: string, toTag: string): Vertex[] {
+        this.vStart = this.vertexByTag(fromTag);
+        this.vFinish = this.vertexByTag(toTag);
+        // init all vertices
+        this.vertices.forEach(v => {
+           v.isStable = false;
+           v.dist = INF;
+           v.prev = null;
+        });
+
+        // start vertex is the first stable
+        let stable = this.vStart;
+        stable.dist = 0;
+        stable.isStable = true;
+        let tempSet = [];
+
+        // main loop
+        while(true) {
+            // process stable's adjacent and move any of them to tempSet
+            for(let v of stable.adjacent.filter(v => !v.isStable)) {
+                let distToStable = stable.dist + stable.distTo(v)
+                if (v.dist > distToStable) {
+                    v.dist = distToStable;
+                    v.prev = stable;
+                }
+                if (tempSet.indexOf(v) == -1) {
+                    tempSet.push(v);
+                }
+            }
+
+            // find next stable vertex in the tempSet
+            let minDist = Math.min(...tempSet.map(v => v.dist));
+            let idx = tempSet.findIndex(v => v.dist == minDist);
+
+            // assertion
+            if (idx == -1) {
+                alert("error in the graph");
+                return;
+            }
+
+            // Viva a new stable!
+            stable = tempSet[idx];
+            stable.isStable = true;
+            tempSet.splice(idx, 1);
+            //
+            if (stable == this.vFinish)
+                break;
+        }
+        // reconstruct the path
+        let path: Vertex[] = [];
+        for (let v = this.vFinish; v != this.vStart; v = v.prev) {
+            path.push(v);
+        }
+        path.push(this.vStart);
+
+        return path;
+    }
+
 
 
 

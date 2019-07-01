@@ -63,9 +63,11 @@ export class GuiderService{
             path.push(v);
         }
         path.push(start);
+        path.reverse();
         return path;
     }
 
+    // finish.prev == null
     findPath(start: Vertex, finish: Vertex): void {
         // do start vertex the first stable
         let stable = start;
@@ -87,13 +89,14 @@ export class GuiderService{
                 }
             }
 
+            // no path exists
+            if (tempSet.length == 0)
+                return;
+
             // find next stable vertex in the tempSet
             let minDist = Math.min(...tempSet.map(v => v.dist));
             let idx = tempSet.findIndex(v => v.dist == minDist);
 
-            // no path exists
-            if (idx == -1)
-                return;
 
             // A new stable founded
             stable = tempSet[idx];

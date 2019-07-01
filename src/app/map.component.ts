@@ -1,5 +1,5 @@
 ﻿import {Component} from '@angular/core';
-import {Point} from './data/point';
+import {Vertex} from './data/vertex';
 
 const DASH_HEIGHT = 50;
 
@@ -30,7 +30,7 @@ export class MapComponent {
 
     // back fields for props
     scaleFld = 1;
-    pathFld: Point[] = [];
+    pathFld: Vertex[] = [];
     floorNo: number = 1;
 
     init() {
@@ -85,7 +85,7 @@ export class MapComponent {
         return this.scaleFld;
     }
 
-    set path(arr: Point[]) {
+    set path(arr: Vertex[]) {
         this.pathFld = arr;
         this.drawPath();
     }

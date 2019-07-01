@@ -33,13 +33,13 @@ const SCALE_FACTOR = 1.2;
     template: `
         <div id="dash">
             
-            <select (valueChange)="from($event)">
+            <select #selFrom (change)="from(selFrom.value)">
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
             
-            <select (valueChange)="to($event)">
+            <select #selTo (change)="to(selTo.value)">
                 <option *ngFor="let tag of tags" [value]="tag">
                     {{tag}}
                 </option>
@@ -69,7 +69,7 @@ export class GuiderComponent
     fromTag: string;
 
     constructor(private guiderService: GuiderService){
-        this.tags = guiderService.getTags();
+        this.tags = guiderService.getAllTags();
     }
 
     change(increase: boolean) {
@@ -81,8 +81,8 @@ export class GuiderComponent
         this.fromTag = tag;
     }
 
-    to(toTag: string) {
-        this.child.path = this.guiderService.getPath(this.fromTag, toTag);
+    to(tag: string) {
+        this.child.path = this.guiderService.getPath(this.fromTag, tag);
     }
 
     step() {

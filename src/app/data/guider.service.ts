@@ -26,14 +26,13 @@ export class GuiderService{
     }
 
     getAllTags(): string[] {
-        let ts = this.vertices.map(v => v.tags)
-            .filter(t => t != "L" && t != "" && t != null )
+        return this.vertices.map(v => v.tags)
+            .filter(t => t != "L" && t != "" && t != null)
             .map(t => t.split(',')
                 .map(x => x.trim())
                 .filter(x => x != ""))
             .reduce((a, s) => a.concat(s), [])
             .sort();
-        return ts;
     }
 
     vertexByTag(tag: string):Vertex  {
@@ -44,7 +43,7 @@ export class GuiderService{
     // stab
     getPath(fromTag: string, toTag: string): Vertex[] {
         let v1 = this.vertexByTag(fromTag);
-        let v2 = v1.adjacent[0];
+        let v2 = this.vertexByTag(toTag);
         return [v1, v2 ];
     }
     //

@@ -68,7 +68,8 @@ export class MapComponent {
         const k = this.scaleFld;
 
         if (this.pathFld.length !== 0) {
-            this.ctx.lineWidth = 0.5;
+            this.ctx.strokeStyle = "yellow";
+            this.ctx.lineWidth = 5;
             this.ctx.beginPath();
             this.ctx.moveTo(this.pathFld[0].x * k, this.pathFld[0].y * k);
             for (let i = 1; i < this.pathFld.length; i++) {
@@ -78,7 +79,8 @@ export class MapComponent {
 
             // current step
             let i = this.stepIdx;
-            this.ctx.lineWidth = 1.5;
+            this.ctx.strokeStyle = "orange";
+            this.ctx.lineWidth = 5;
             this.ctx.beginPath();
 
             this.ctx.moveTo(this.pathFld[i].x * k, this.pathFld[i].y * k);

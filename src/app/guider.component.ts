@@ -85,13 +85,13 @@ export class GuiderComponent
         let path = this.guiderService.getPath(this.fromTag, tag);
         if (path == null)
             alert("No path exists.")
-        else
+        else {
             this.child.path = path;
+        }
     }
 
     step() {
-        // let path  = this.guiderService.getPath("144", "150");
-        // console.log(path);
+        this.child.step();
     }
 
     help() {

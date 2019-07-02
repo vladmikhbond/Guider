@@ -16,7 +16,7 @@ const DASH_HEIGHT = 50;
         }
     `],
     template: `
-        <div id="scrollBox" (scroll)="onScroll($event)">
+        <div id="scrollBox" >
             <canvas id="canvas"></canvas>
         </div>
         `
@@ -29,9 +29,11 @@ export class MapComponent {
     ctx: CanvasRenderingContext2D;
 
     // back fields for props
-    scaleFld = 1;
-    pathFld: Vertex[] = [];
-    floorNo: number = 1;
+    private scaleFld = 1;
+    private pathFld: Vertex[] = [];
+
+    private floorNo: number = 0;
+    private stepIdx: number;
 
     init() {
         // fill array of images
@@ -47,7 +49,7 @@ export class MapComponent {
         this.redraw();
     }
 
-    redraw() {
+    private redraw() {
         let img = this.currentFloor;
         // canvas size
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
@@ -62,13 +64,30 @@ export class MapComponent {
         this.drawPath();
     }
 
+    private drawPath() {
+        const k = this.scaleFld;
 
-    onScroll(e: Event) {
-        let scrollY = (<HTMLElement>e.target).scrollTop | 0;
-        let scrollX = (<HTMLElement>e.target).scrollLeft | 0;
-        console.log(scrollX, scrollY);
+        if (this.pathFld.length !== 0) {
+            this.ctx.lineWidth = 0.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.pathFld[0].x * k, this.pathFld[0].y * k);
+            for (let i = 1; i < this.pathFld.length; i++) {
+                this.ctx.lineTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
+            }
+            this.ctx.stroke();
+
+            // current step
+            let i = this.stepIdx;
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+
+            this.ctx.moveTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
+            this.ctx.lineTo(this.pathFld[i + 1].x * k, this.pathFld[i + 1].y * k);
+            this.ctx.stroke();
+
+
+        }
     }
-
 
     set scale(newScale: number) {
         const k = newScale / this.scaleFld;
@@ -87,30 +106,23 @@ export class MapComponent {
 
     set path(arr: Vertex[]) {
         this.pathFld = arr;
-        this.drawPath();
+        this.stepIdx = 0;
+        this.floorNo = this.path[1].z;
+        this.redraw();
+    }
+    get path() {
+        return this.pathFld;
     }
 
     get currentFloor() {
-        return this.bgImages[this.floorNo - 1];
-    }
-
-    doStep(x: string) {
-        this.drawPath();
-        alert(x);
-    }
-
-    private drawPath() {
-        const k = this.scaleFld;
-
-        if (this.pathFld.length !== 0) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.pathFld[0].x * k, this.pathFld[0].y * k);
-            for (let i = 1; i < this.pathFld.length; i++) {
-                this.ctx.lineTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
-            }
-            this.ctx.stroke();
-        }
+        return this.bgImages[this.floorNo];
     }
 
 
+    step() {
+        this.stepIdx = (this.stepIdx + 1) % (this.path.length - 1);
+        this.floorNo = this.path[this.stepIdx+1].z;
+        this.redraw();
+
+    }
 }

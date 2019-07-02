@@ -66,14 +66,15 @@ export class MapComponent {
 
     private drawPath() {
         const k = this.scaleFld;
+        const path = this.path;
 
-        if (this.pathFld.length !== 0) {
+        if (path.length !== 0) {
             this.ctx.strokeStyle = "yellow";
             this.ctx.lineWidth = 5;
             this.ctx.beginPath();
-            this.ctx.moveTo(this.pathFld[0].x * k, this.pathFld[0].y * k);
-            for (let i = 1; i < this.pathFld.length; i++) {
-                this.ctx.lineTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
+            this.ctx.moveTo(path[0].x * k, path[0].y * k);
+            for (let i = 1; i < path.length; i++) {
+                this.ctx.lineTo(path[i].x * k, path[i].y * k);
             }
             this.ctx.stroke();
 
@@ -82,13 +83,13 @@ export class MapComponent {
             this.ctx.strokeStyle = "orange";
             this.ctx.lineWidth = 5;
             this.ctx.beginPath();
-            if (this.pathFld[i].z != this.pathFld[i+1].z ) {
+            if (path[i].z != path[i+1].z ) {
                 // ladder
-                this.ctx.ellipse(this.pathFld[i].x, this.pathFld[i].y, 8, 8, 0, 0, 360);
+                this.ctx.ellipse(path[i].x * k, path[i].y * k, 8, 8, 0, 0, 360);
             } else {
                 //
-                this.ctx.moveTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
-                this.ctx.lineTo(this.pathFld[i + 1].x * k, this.pathFld[i + 1].y * k);
+                this.ctx.moveTo(path[i].x * k, path[i].y * k);
+                this.ctx.lineTo(path[i + 1].x * k, path[i + 1].y * k);
             }
             this.ctx.stroke();
 

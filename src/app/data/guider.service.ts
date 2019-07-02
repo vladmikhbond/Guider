@@ -107,21 +107,20 @@ export class GuiderService{
 
     private restorePath(start: Vertex, finish: Vertex): Vertex[] {
         let path: Vertex[] = [finish];
-        let v1 = finish;
-        for (let v2 = finish.prev; v2 != start; v1 = v2, v2 = v2.prev) {
-            if (!collinear(v1))
-                path.push(v2);
+        for (let v = finish.prev; v != start; v = v.prev) {
+            if (!collinear(v))
+                path.push(v);
         }
         path.push(start);
         path.reverse();
         return path;
 
-        // true - if given vertex and its 2 previous ones lie on a straight line
+        // true - if given vertex and its prev and next ones lie on a straight line
         //
-        function collinear(a: Vertex): boolean {
-            if (a.prev.prev == null)
+        function collinear(b: Vertex): boolean {
+            if (b.prev == null)
                 return false;
-            let b = a.prev;
+            let a = path[path.length - 1];
             let c = b.prev;
             let ex = a.x == b.x && b.x == c.x;
             let ey = a.y == b.y && b.y == c.y;

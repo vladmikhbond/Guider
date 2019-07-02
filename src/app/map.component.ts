@@ -82,11 +82,15 @@ export class MapComponent {
             this.ctx.strokeStyle = "orange";
             this.ctx.lineWidth = 5;
             this.ctx.beginPath();
-
-            this.ctx.moveTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
-            this.ctx.lineTo(this.pathFld[i + 1].x * k, this.pathFld[i + 1].y * k);
+            if (this.pathFld[i].z != this.pathFld[i+1].z ) {
+                // ladder
+                this.ctx.ellipse(this.pathFld[i].x, this.pathFld[i].y, 8, 8, 0, 0, 360);
+            } else {
+                //
+                this.ctx.moveTo(this.pathFld[i].x * k, this.pathFld[i].y * k);
+                this.ctx.lineTo(this.pathFld[i + 1].x * k, this.pathFld[i + 1].y * k);
+            }
             this.ctx.stroke();
-
 
         }
     }

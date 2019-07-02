@@ -46,6 +46,8 @@ export class GuiderService{
     getPath(fromTag: string, toTag: string): Vertex[] {
         let start = this.vertexByTag(fromTag);
         let finish = this.vertexByTag(toTag);
+        if (!start) alert("cannot find fertex vith tag" + fromTag +".");
+        if (!finish) alert("cannot find fertex vith tag" + toTag +".");
         // init all vertices
         this.vertices.forEach(v => {
            v.isStable = false;

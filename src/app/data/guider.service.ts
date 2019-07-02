@@ -38,61 +38,38 @@ export class GuiderService{
     }
 
     private vertexByTag(tag: string):Vertex  {
-        let test = (ts: string, t: string) => (',' + ts + ',').indexOf(',' + t + ',') != -1;
-        return this.vertices.find(v => test(v.tags, tag));
+        tag = ',' + tag + ',';
+        for (let v of this.vertices) {
+            if ((',' + v.tags + ',').indexOf(tag) != -1)
+                return v;
+        }
+        console.error(`No vertex with tag "${tag}"`);
+        return null;
     }
 
+
+    // main
     //
-    getPath(fromTag: string, toTag: string): Vertex[] {
+    findPath(fromTag: string, toTag: string): Vertex[] {
         let start = this.vertexByTag(fromTag);
         let finish = this.vertexByTag(toTag);
-        if (!start) alert("cannot find fertex vith tag" + fromTag +".");
-        if (!finish) alert("cannot find fertex vith tag" + toTag +".");
         // init all vertices
         this.vertices.forEach(v => {
            v.isStable = false;
            v.dist = INF;
            v.prev = null;
         });
-
-        this.findPath(start, finish);
+        // main part
+        this.Dijkstra(start, finish);
         if (finish.prev != null)
             return this.restorePath(start, finish);
-
         // no path found
         return null;
     }
 
-    private restorePath(start: Vertex, finish: Vertex): Vertex[] {
-        let path: Vertex[] = [finish];
-        let v1 = finish;
-        for (let v2 = finish.prev; v2 != start; v1 = v2, v2 = v2.prev) {
-            if (!this.collinear3(v1))
-            path.push(v2);
-        }
-        path.push(start);
-        path.reverse();
-        return path;
-    }
-
-
-    // true - if given vertex and its 2 previous ones lie on a straight line
-    //
-    private collinear3(a: Vertex): boolean {
-        if (a.prev.prev == null)
-            return false;
-        let b = a.prev;
-        let c = b.prev;
-        let ex = a.x == b.x && b.x == c.x;
-        let ey = a.y == b.y && b.y == c.y;
-        let ez = a.z == b.z && b.z == c.z;
-        return ex && ey || ex && ez || ey && ez;
-    }
-
-
     // Path is not found if finish.prev == null
     //
-    findPath(start: Vertex, finish: Vertex): void {
+    private Dijkstra(start: Vertex, finish: Vertex): void {
         // do start vertex the first stable
         let stable = start;
         stable.dist = 0;
@@ -125,6 +102,31 @@ export class GuiderService{
             stable = tempSet[idx];
             stable.isStable = true;
             tempSet.splice(idx, 1);
+        }
+    }
+
+    private restorePath(start: Vertex, finish: Vertex): Vertex[] {
+        let path: Vertex[] = [finish];
+        let v1 = finish;
+        for (let v2 = finish.prev; v2 != start; v1 = v2, v2 = v2.prev) {
+            if (!collinear(v1))
+                path.push(v2);
+        }
+        path.push(start);
+        path.reverse();
+        return path;
+
+        // true - if given vertex and its 2 previous ones lie on a straight line
+        //
+        function collinear(a: Vertex): boolean {
+            if (a.prev.prev == null)
+                return false;
+            let b = a.prev;
+            let c = b.prev;
+            let ex = a.x == b.x && b.x == c.x;
+            let ey = a.y == b.y && b.y == c.y;
+            let ez = a.z == b.z && b.z == c.z;
+            return ex && ey || ex && ez || ey && ez;
         }
     }
 

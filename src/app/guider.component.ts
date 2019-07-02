@@ -70,6 +70,7 @@ export class GuiderComponent
 
     constructor(private guiderService: GuiderService){
         this.tags = guiderService.getAllTags();
+        this.fromTag = this.tags[0];
     }
 
     change(increase: boolean) {
@@ -82,7 +83,7 @@ export class GuiderComponent
     }
 
     to(tag: string) {
-        let path = this.guiderService.getPath(this.fromTag, tag);
+        let path = this.guiderService.findPath(this.fromTag, tag);
         if (path == null)
             alert("No path exists.")
         else {

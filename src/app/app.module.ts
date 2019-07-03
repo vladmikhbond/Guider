@@ -5,15 +5,15 @@ import {MatButtonModule, MatSelectModule} from '@angular/material';
  
 //import {AppComponent}   from './app.component';
 import {MapComponent}   from './map.component';
-import {GuiderComponent} from "./guider.component";
+import {AppComponent} from "./app.component";
 
 import {GuiderService} from './data/guider.service';
 
 
 @NgModule({
     imports: [BrowserModule, BrowserAnimationsModule, MatButtonModule, MatSelectModule],
-    declarations: [GuiderComponent, MapComponent],
+    declarations: [AppComponent, MapComponent],
     providers: [GuiderService],
-    bootstrap: [GuiderComponent]
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

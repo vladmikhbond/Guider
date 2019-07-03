@@ -59,18 +59,19 @@ const SCALE_FACTOR = 1.2;
         <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
     `
 })
-export class GuiderComponent
+export class AppComponent
 {
     @ViewChild(MapComponent, {static: false})
     child: MapComponent;
 
     scale = 1;
     tags: string[];
-    fromTag: string;
+    fromTag: string = "ВХОД";
+
 
     constructor(private guiderService: GuiderService){
         this.tags = guiderService.getAllTags();
-        this.fromTag = this.tags[0];
+        this.from("ВХОД");
     }
 
     change(increase: boolean) {

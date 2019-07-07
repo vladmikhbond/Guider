@@ -27,7 +27,7 @@ export class GuiderService{
         }
     }
 
-    getAllTags(): string[] {
+    private getAllTags(): string[] {
         return this.vertices.map(v => v.tags)
             .filter(t => t != "L" && t != "" && t != null)
             .map(t => t.split(',')
@@ -36,6 +36,18 @@ export class GuiderService{
             .reduce((a, s) => a.concat(s), [])
             .sort();
     }
+
+    getFromTags(): string[] {
+        return this.getAllTags().filter(t => t != 'М' && t != 'Ж');
+    }
+
+    getToTags(): string[] {
+        let tags = this.getFromTags();
+        tags.push('М');
+        tags.push('Ж');
+        return tags;
+    }
+
 
     private vertexByTag(tag: string):Vertex  {
         tag = ',' + tag + ',';

@@ -29,28 +29,41 @@ const SCALE_FACTOR = 1.2;
             padding: 0;
             background-color: aqua;
         }
+        #help {
+            text-align: center;
+            background-color: lemonchiffon;
+            padding: 20px;
+        }
     `],
     template: `
         <div id="dash">
-            
-            <select #selFrom (change)="from(selFrom.value)" value="{{fromTag}}">
-                <option *ngFor="let tag of tags" [value]="tag">
+            <select #selFrom [style.width]="boxWidth" (change)="from(selFrom.value)" value="{{fromTag}}">
+                <option *ngFor="let tag of fromTags" [value]="tag">
+                    {{tag}}
+                </option>
+            </select>
+            <select #selTo [style.width]="boxWidth" (change)="to(selTo.value)" value="{{''}}">
+                <option *ngFor="let tag of toTags" [value]="tag">
                     {{tag}}
                 </option>
             </select>
             
-            <select #selTo (change)="to(selTo.value)" value="{{''}}">
-                <option *ngFor="let tag of tags" [value]="tag">
-                    {{tag}}
-                </option>
-            </select>
-            
-            <button mat-stroked-button (click)="step()">Step</button>
+            <button mat-stroked-button (click)="step()">Go</button>
             <button mat-stroked-button (click)="change(true)">+</button>
             <button mat-stroked-button (click)="change(false)">-</button>
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
-        <map></map>
+
+        <map [style.display]="dmode"></map>
+        <div id="help">
+            <h1>Инструкция</h1>
+            <p>Из первого списка выберите "откуда".
+            <p>Из второго списка выберите "куда".
+            <p>Жмите на кнопку Go и идите.
+            <h2>Счастливого пути!</h2>
+        </div>
+
+
         <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.init()" hidden alt="floor1"/>
         <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
         <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
@@ -65,11 +78,18 @@ export class AppComponent
     child: MapComponent;
 
     scale = 1;
-    tags: string[];
+    fromTags: string[];
+    toTags: string[];
+    boxWidth: string;
+    dmode: string = 'block';
     fromTag: string = "ВХОД";
 
     constructor(private guiderService: GuiderService){
-        this.tags = guiderService.getAllTags();
+        this.fromTags= guiderService.getFromTags();
+        this.toTags= guiderService.getToTags();
+        this.boxWidth = `${((screen.width - 4 * 50) / 2) | 0}px`;
+
+
     }
 
     change(increase: boolean) {
@@ -91,11 +111,13 @@ export class AppComponent
     }
 
     step() {
+        this.dmode = 'block';
         this.child.step();
     }
 
     help() {
-        this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
+        //this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
+        this.dmode = this.dmode == 'none' ? 'block' : 'none';
     }
 
 }

@@ -80,7 +80,6 @@ export class AppComponent
     @ViewChild(MapComponent, {static: false})
     child: MapComponent;
 
-    scale = 1;
     fromTags: string[];
     toTags: string[];
     boxWidth: string;
@@ -100,8 +99,7 @@ export class AppComponent
 
 
     changeScale(increase: boolean) {
-        this.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
-        this.child.scale = this.scale;
+        this.child.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
     }
 
     from(tag: string) {

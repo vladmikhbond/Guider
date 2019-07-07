@@ -21,9 +21,17 @@ const SCALE_FACTOR = 1.2;
         <div id="scrollBox" >
             <canvas id="canvas"></canvas>
         </div>
-        `
+        
+        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="init()" hidden alt="floor1"/>
+        <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
+        <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
+        <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
+        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
+        <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
+
+    `
 })
-export class MapComponent implements OnInit {
+export class MapComponent {
 
     bgImages: HTMLImageElement[];
     scrollBox: HTMLElement;
@@ -31,21 +39,16 @@ export class MapComponent implements OnInit {
     ctx: CanvasRenderingContext2D;
 
     // back fields for props
-    private scaleFld = 1;
+    private scale = 1;
     private pathFld: Vertex[] = [];
 
     private floorIdx: number = 0;
     private stepIdx: number;
 
-    // for touch even handlers
+    // for touch event handlers
     private xt: number;
     private yt: number;
 
-
-
-    ngOnInit(): void {
-        this.init();
-    }
 
     init() {
         // fill array of images
@@ -57,12 +60,92 @@ export class MapComponent implements OnInit {
 
         // scrollBox size
         this.scrollBox = document.getElementById("scrollBox");
-        this.scrollBox.style.height = `${screen.height - DASH_HEIGHT - 2}px`;
-        this.redraw();
+        this.scrollBox.style.height = `${screen.availHeight - DASH_HEIGHT - 2}px`;
 
-        let canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        canvas.addEventListener("touchstart",  e => this.handleStart(e), false);
-        canvas.addEventListener("touchmove", e => this.handleMove(e), false);
+        let img = this.bgImages[0];
+        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
+        // touch event handlers
+        this.canvas.addEventListener("touchstart",  e => this.handleStart(e), false);
+        this.canvas.addEventListener("touchmove", e => this.handleMove(e), false);
+
+        this.redraw();
+    }
+
+
+    private redraw() {
+        let img = this.currentFloor;
+        // scale canvas
+        this.canvas.width = img.width * this.scale;
+        this.canvas.height = img.height * this.scale;
+        this.ctx = this.canvas.getContext("2d");
+
+        // draw image
+        this.ctx.drawImage(img,
+            0, 0, img.width, img.height,
+            0, 0, this.canvas.width, this.canvas.height);
+
+        // may be draw path
+        if (this.path.length)
+            this.drawPath();
+    }
+
+    private drawPath() {
+        const k = this.scale;
+        const path = this.path;
+
+        this.ctx.strokeStyle = "yellow";
+        this.ctx.lineWidth = 5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(path[0].x * k, path[0].y * k);
+        for (let i = 1; i < path.length; i++) {
+            this.ctx.lineTo(path[i].x * k, path[i].y * k);
+        }
+        this.ctx.stroke();
+
+        if (this.stepIdx == -1)
+            return;
+
+        // current step
+        let i = this.stepIdx;
+        this.ctx.strokeStyle = "orange";
+        this.ctx.lineWidth = 5;
+        this.ctx.beginPath();
+        if (path[i].z != path[i+1].z ) {
+            // ladder
+            this.ctx.ellipse(path[i].x * k, path[i].y * k, 8, 8, 0, 0, 360);
+        } else {
+            //
+            this.ctx.moveTo(path[i].x * k, path[i].y * k);
+            this.ctx.lineTo(path[i + 1].x * k, path[i + 1].y * k);
+        }
+        this.ctx.stroke();
+    }
+
+    changeScale(k: number) {
+        // center is a fixed point
+        const box = this.scrollBox;
+        const w = box.clientWidth / 2;
+        const h = (box.clientHeight) / 2;
+        box.scrollLeft = (box.scrollLeft + w) * k - w;
+        box.scrollTop = (box.scrollTop + h) * k - h;
+
+        this.scale *= k;
+        this.redraw();
+    }
+
+
+    set path(arr: Vertex[]) {
+        this.pathFld = arr;
+        this.stepIdx = -1;
+        this.floorIdx = this.path[1].z;
+        this.redraw();
+    }
+    get path() {
+        return this.pathFld;
+    }
+
+    get currentFloor() {
+        return this.bgImages[this.floorIdx];
     }
 
     handleStart(evt: TouchEvent) {
@@ -89,91 +172,12 @@ export class MapComponent implements OnInit {
             xt = Math.abs(evt.touches[0].clientX - evt.touches[1].clientX);
             yt = Math.abs(evt.touches[0].clientY - evt.touches[1].clientY);
             let k = this.xt < xt || this.yt < yt ? SCALE_FACTOR : 1 / SCALE_FACTOR;
-            this.scale *= k;
+            this.changeScale(k);
         }
         this.xt = xt;
         this.yt = yt;
     }
 
-
-    private redraw() {
-        let img = this.currentFloor;
-        // canvas size
-        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.canvas.width = img.width * this.scaleFld;
-        this.canvas.height = img.height * this.scaleFld;
-
-        // draw image
-        this.ctx = this.canvas.getContext("2d");
-        this.ctx.drawImage(img,
-            0, 0, img.width, img.height,
-            0, 0, this.canvas.width, this.canvas.height);
-        this.drawPath();
-    }
-
-    private drawPath() {
-        const k = this.scaleFld;
-        const path = this.path;
-
-        if (path.length !== 0) {
-            this.ctx.strokeStyle = "yellow";
-            this.ctx.lineWidth = 5;
-            this.ctx.beginPath();
-            this.ctx.moveTo(path[0].x * k, path[0].y * k);
-            for (let i = 1; i < path.length; i++) {
-                this.ctx.lineTo(path[i].x * k, path[i].y * k);
-            }
-            this.ctx.stroke();
-
-            if (this.stepIdx == -1)
-                return;
-
-            // current step
-            let i = this.stepIdx;
-            this.ctx.strokeStyle = "orange";
-            this.ctx.lineWidth = 5;
-            this.ctx.beginPath();
-            if (path[i].z != path[i+1].z ) {
-                // ladder
-                this.ctx.ellipse(path[i].x * k, path[i].y * k, 8, 8, 0, 0, 360);
-            } else {
-                //
-                this.ctx.moveTo(path[i].x * k, path[i].y * k);
-                this.ctx.lineTo(path[i + 1].x * k, path[i + 1].y * k);
-            }
-            this.ctx.stroke();
-
-        }
-    }
-
-    set scale(newScale: number) {
-        const k = newScale / this.scaleFld;
-        const w = screen.width / 2;
-        const h = (screen.height - DASH_HEIGHT) / 2;
-        this.scrollBox.scrollLeft = (this.scrollBox.scrollLeft + w) * k - w;
-        this.scrollBox.scrollTop = (this.scrollBox.scrollTop + h) * k - h;
-
-        this.scaleFld = newScale;
-        this.redraw();
-    }
-
-    get scale() {
-        return this.scaleFld;
-    }
-
-    set path(arr: Vertex[]) {
-        this.pathFld = arr;
-        this.stepIdx = -1;
-        this.floorIdx = this.path[1].z;
-        this.redraw();
-    }
-    get path() {
-        return this.pathFld;
-    }
-
-    get currentFloor() {
-        return this.bgImages[this.floorIdx];
-    }
 
 
     step() {
@@ -191,8 +195,7 @@ export class MapComponent implements OnInit {
     }
 
     autoscroll(target: Vertex) {
-        console.log(target);
-        const k = this.scaleFld;
+        const k = this.scale;
         const box = this.scrollBox;
         const padding = 30;
         // to right

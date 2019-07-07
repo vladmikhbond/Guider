@@ -65,14 +65,6 @@ const SCALE_FACTOR = 1.2;
             <p>Рекомендуемый мобильный браузер - Chrome.
 
         </div>
-
-
-        <img id="floor1" [src]="'assets/floors/1.svg'" (load)="child.init()" hidden alt="floor1"/>
-        <img id="floor2" [src]="'assets/floors/2.svg'" hidden alt="floor2"/>
-        <img id="floor3" [src]="'assets/floors/3.svg'" hidden alt="floor3"/>
-        <img id="floor4" [src]="'assets/floors/4.svg'" hidden alt="floor4"/>
-        <img id="floor5" [src]="'assets/floors/5.svg'" hidden alt="floor5"/>
-        <img id="floor6" [src]="'assets/floors/6.svg'" hidden alt="floor6"/>
     `
 })
 export class AppComponent
@@ -99,7 +91,8 @@ export class AppComponent
 
 
     changeScale(increase: boolean) {
-        this.child.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
+        let k = increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
+        this.child.changeScale(k);
     }
 
     from(tag: string) {

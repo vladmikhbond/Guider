@@ -60,7 +60,7 @@ export class MapComponent {
 
         // scrollBox size
         this.scrollBox = document.getElementById("scrollBox");
-        this.scrollBox.style.height = `${screen.availHeight - DASH_HEIGHT - 2}px`;
+        this.scrollBox.style.height = `${innerHeight - DASH_HEIGHT - 2}px`;
 
         let img = this.bgImages[0];
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");

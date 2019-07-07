@@ -34,8 +34,14 @@ export class MapComponent implements OnInit {
     private scaleFld = 1;
     private pathFld: Vertex[] = [];
 
-    private floorNo: number = 0;
+    private floorIdx: number = 0;
     private stepIdx: number;
+
+    // for touch even handlers
+    private xt: number;
+    private yt: number;
+
+
 
     ngOnInit(): void {
         this.init();
@@ -58,9 +64,6 @@ export class MapComponent implements OnInit {
         canvas.addEventListener("touchstart",  e => this.handleStart(e), false);
         canvas.addEventListener("touchmove", e => this.handleMove(e), false);
     }
-
-    xt: number;
-    yt: number;
 
     handleStart(evt: TouchEvent) {
         evt.preventDefault();
@@ -122,6 +125,9 @@ export class MapComponent implements OnInit {
             }
             this.ctx.stroke();
 
+            if (this.stepIdx == -1)
+                return;
+
             // current step
             let i = this.stepIdx;
             this.ctx.strokeStyle = "orange";
@@ -157,8 +163,8 @@ export class MapComponent implements OnInit {
 
     set path(arr: Vertex[]) {
         this.pathFld = arr;
-        this.stepIdx = 0;
-        this.floorNo = this.path[1].z;
+        this.stepIdx = -1;
+        this.floorIdx = this.path[1].z;
         this.redraw();
     }
     get path() {
@@ -166,14 +172,57 @@ export class MapComponent implements OnInit {
     }
 
     get currentFloor() {
-        return this.bgImages[this.floorNo];
+        return this.bgImages[this.floorIdx];
     }
 
 
     step() {
-        this.stepIdx = (this.stepIdx + 1) % (this.path.length - 1);
-        this.floorNo = this.path[this.stepIdx+1].z;
+        this.stepIdx++;
+        if (this.stepIdx == this.path.length - 1) {
+            this.stepIdx = -1;
+            alert("Уже пришли.");
+        }
+        this.floorIdx = this.path[this.stepIdx + 1].z;
         this.redraw();
+        // autoscroll
+        let target = this.path[this.stepIdx + 1];
+        this.autoscroll(target);
+
+    }
+
+    autoscroll(target: Vertex) {
+        console.log(target);
+        const k = this.scaleFld;
+        const box = this.scrollBox;
+        const padding = 30;
+        // to right
+        if ( target.x * k > box.scrollLeft + box.clientWidth) {
+            let d = target.x * k - (box.scrollLeft + box.clientWidth);
+            box.scrollLeft += d + padding;
+        }
+        // to left
+        if ( target.x * k < box.scrollLeft) {
+            let d = box.scrollLeft - target.x * k;
+            box.scrollLeft -= d + padding;
+        }
+        // to down
+        if ( target.y * k > box.scrollTop + box.clientHeight) {
+            let d = target.y * k - (box.scrollTop + box.clientHeight);
+            box.scrollTop += d + padding;
+        }
+
+        // to down
+        if ( target.y * k > box.scrollTop + box.clientHeight) {
+            let d = target.y * k - (box.scrollTop + box.clientHeight);
+            box.scrollTop += d + padding;
+        }
+        // to up
+        if ( target.y * k < box.scrollTop) {
+            let d = box.scrollTop - target.y * k;
+            box.scrollTop -= d + padding;
+        }
+
+
 
     }
 

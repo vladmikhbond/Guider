@@ -16,20 +16,20 @@ const SCALE_FACTOR = 1.2;
             background-color: lightblue;
             margin: 0;
         }
-        select {
-            width: 60px;
+        select, button {
+            width: 50px;
             height: 50px;
             background-color: aqua;
-            border: solid thin lightblue;
+        }
+        select {
+            border: solid 1px black;
         }
         button {
             min-width: 50px;
-            width: 50px;
-            height: 50px;
-            padding: 0;
-            background-color: aqua;
-        }
+             padding: 0;
+         }
         #help {
+            font-size: large;
             text-align: center;
             background-color: lemonchiffon;
             padding: 20px;
@@ -47,20 +47,23 @@ const SCALE_FACTOR = 1.2;
                     {{tag}}
                 </option>
             </select>
-            
-            <button mat-stroked-button (click)="step()">Go</button>
-            <button mat-stroked-button (click)="change(true)">+</button>
-            <button mat-stroked-button (click)="change(false)">-</button>
+
+            <button mat-stroked-button (click)="go()">Go</button>
+            <button mat-stroked-button (click)="changeScale(true)">+</button>
+            <button mat-stroked-button (click)="changeScale(false)">-</button>
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
 
-        <map [style.display]="dmode"></map>
-        <div id="help">
+        <map [style.display]="mapDisplay"></map>
+        <div id="help" [style.display]="halpDisplay">
             <h1>Инструкция</h1>
             <p>Из первого списка выберите "откуда".
             <p>Из второго списка выберите "куда".
             <p>Жмите на кнопку Go и идите.
             <h2>Счастливого пути!</h2>
+            <hr/>
+            <p>Рекомендуемый мобильный браузер - Chrome.
+
         </div>
 
 
@@ -81,18 +84,22 @@ export class AppComponent
     fromTags: string[];
     toTags: string[];
     boxWidth: string;
-    dmode: string = 'block';
+    mapDisplay: string = 'block';
+    halpDisplay: string = 'none';
     fromTag: string = "ВХОД";
 
     constructor(private guiderService: GuiderService){
-        this.fromTags= guiderService.getFromTags();
-        this.toTags= guiderService.getToTags();
-        this.boxWidth = `${((screen.width - 4 * 50) / 2) | 0}px`;
-
-
+        // from-to definition
+        this.fromTags = guiderService.getFromTags();
+        this.toTags = guiderService.getToTags();
+        // buttons layout
+        let width = ((screen.width - 4 * 50) / 2) | 0;
+        if (width > 100) width = 100;
+        this.boxWidth = width + 'px';
     }
 
-    change(increase: boolean) {
+
+    changeScale(increase: boolean) {
         this.scale *= increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
         this.child.scale = this.scale;
     }
@@ -110,14 +117,14 @@ export class AppComponent
         }
     }
 
-    step() {
-        this.dmode = 'block';
+    go() {
+        this.mapDisplay = 'block';
         this.child.step();
     }
 
     help() {
-        //this.child.scale = this.child.scale == this.scale ? 0 : this.scale;
-        this.dmode = this.dmode == 'none' ? 'block' : 'none';
+        this.mapDisplay = this.mapDisplay == 'none' ? 'block' : 'none';
+        this.halpDisplay = this.halpDisplay == 'none' ? 'block' : 'none';
     }
 
 }

@@ -1,4 +1,4 @@
-﻿import {Component, OnInit} from '@angular/core';
+﻿import {Component} from '@angular/core';
 import {Vertex} from './data/vertex';
 
 const DASH_HEIGHT = 50;
@@ -62,7 +62,6 @@ export class MapComponent {
         this.scrollBox = document.getElementById("scrollBox");
         this.scrollBox.style.height = `${innerHeight - DASH_HEIGHT - 2}px`;
 
-        let img = this.bgImages[0];
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         // touch event handlers
         this.canvas.addEventListener("touchstart",  e => this.handleStart(e), false);
@@ -113,6 +112,7 @@ export class MapComponent {
         const i = this.stepIdx;
         const ctx = this.ctx;
         this.ctx.strokeStyle = "orange";
+        this.ctx.lineCap = "round";
         const up = path[i+1].z - path[i].z;
 
         if (up) {
@@ -141,7 +141,7 @@ export class MapComponent {
                     callback();
                 }
                 i++;
-            }, 1000 / N);
+            }, 100);
 
         }
 
@@ -149,7 +149,7 @@ export class MapComponent {
         // external vars: ctx
         function lineAnime(x1: number, y1: number, x2: number, y2: number) {
             ctx.lineWidth = 5;
-            const N = 10;
+            const N = (Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) / 10) | 0;
             const dx = (x2 - x1) / N;
             const dy = (y2 - y1) / N;
             let x = x1;
@@ -164,7 +164,7 @@ export class MapComponent {
                 y += dy;
                 if (Math.hypot(x2 - x, y2 - y) < 2)
                     clearInterval(t);
-            }, 1000 / N);
+            }, 100);
         }
 
     }

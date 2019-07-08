@@ -102,7 +102,7 @@ export class AppComponent
     to(tag: string) {
         let path = this.guiderService.findPath(this.fromTag, tag);
         if (path == null)
-            alert("No path exists.")
+            console.error("No path exists.");
         else {
             this.child.path = path;
         }

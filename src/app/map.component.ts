@@ -105,21 +105,70 @@ export class MapComponent {
         if (this.stepIdx == -1)
             return;
 
-        // current step
-        let i = this.stepIdx;
-        this.ctx.strokeStyle = "orange";
-        this.ctx.lineWidth = 5;
-        this.ctx.beginPath();
-        if (path[i].z != path[i+1].z ) {
-            // ladder
-            this.ctx.ellipse(path[i].x * k, path[i].y * k, 8, 8, 0, 0, 360);
-        } else {
-            //
-            this.ctx.moveTo(path[i].x * k, path[i].y * k);
-            this.ctx.lineTo(path[i + 1].x * k, path[i + 1].y * k);
-        }
-        this.ctx.stroke();
     }
+
+    private drawStep() {
+        const k = this.scale;
+        const path = this.path;
+        const i = this.stepIdx;
+        const ctx = this.ctx;
+        this.ctx.strokeStyle = "orange";
+        const up = path[i+1].z - path[i].z;
+
+        if (up) {
+            ladderAnime(path[i].x * k, path[i].y * k, () => this.redraw());
+        } else {
+            lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
+        }
+
+        // external vars: ctx, k, up
+        function ladderAnime(x: number, y: number, callback: any) {
+            ctx.lineWidth = 3;
+            const d = 5 * k;
+            const N = 7;
+            let i = 0;
+            const t = setInterval(function() {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                if (i % 2)
+                    x += d;
+                else
+                    y -= d * up;
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                if (i == N) {
+                    clearInterval(t);
+                    callback();
+                }
+                i++;
+            }, 1000 / N);
+
+        }
+
+
+        // external vars: ctx
+        function lineAnime(x1: number, y1: number, x2: number, y2: number) {
+            ctx.lineWidth = 5;
+            const N = 10;
+            const dx = (x2 - x1) / N;
+            const dy = (y2 - y1) / N;
+            let x = x1;
+            let y = y1;
+
+            const t = setInterval(function() {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + dx, y + dy);
+                ctx.stroke();
+                x += dx;
+                y += dy;
+                if (Math.hypot(x2 - x, y2 - y) < 2)
+                    clearInterval(t);
+            }, 1000 / N);
+        }
+
+    }
+
 
     changeScale(k: number) {
         // center is a fixed point
@@ -143,10 +192,10 @@ export class MapComponent {
     get path() {
         return this.pathFld;
     }
-
     get currentFloor() {
         return this.bgImages[this.floorIdx];
     }
+
 
     handleStart(evt: TouchEvent) {
         evt.preventDefault();
@@ -179,19 +228,24 @@ export class MapComponent {
     }
 
 
-
     step() {
         this.stepIdx++;
         if (this.stepIdx == this.path.length - 1) {
             this.stepIdx = -1;
             alert("Уже пришли.");
+            this.redraw();
         }
+        // show floor image
         this.floorIdx = this.path[this.stepIdx + 1].z;
-        this.redraw();
+        if (this.stepIdx == -1 ) {
+            this.redraw();
+        } else {
+            this.drawStep();
+        }
+
         // autoscroll
         let target = this.path[this.stepIdx + 1];
         this.autoscroll(target);
-
     }
 
     autoscroll(target: Vertex) {
@@ -228,6 +282,5 @@ export class MapComponent {
 
 
     }
-
 
 }

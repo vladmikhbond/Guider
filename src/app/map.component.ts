@@ -111,21 +111,21 @@ export class MapComponent {
         const path = this.path;
         const i = this.stepIdx;
         const ctx = this.ctx;
-        this.ctx.strokeStyle = "orange";
+        this.ctx.strokeStyle = "red";
         this.ctx.lineCap = "round";
-        const up = path[i+1].z - path[i].z;
+        const up_down = path[i+1].z - path[i].z;
 
-        if (up) {
+        if (up_down) {
             ladderAnime(path[i].x * k, path[i].y * k, () => this.redraw());
         } else {
             lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
         }
 
-        // external vars: ctx, k, up
+        // external vars: ctx, k, up_down
         function ladderAnime(x: number, y: number, callback: any) {
             ctx.lineWidth = 3;
             const d = 5 * k;
-            const N = 7;
+            const N = 7 * Math.abs(up_down);
             let i = 0;
             const t = setInterval(function() {
                 ctx.beginPath();
@@ -133,7 +133,7 @@ export class MapComponent {
                 if (i % 2)
                     x += d;
                 else
-                    y -= d * up;
+                    y -= d * Math.sign(up_down);
                 ctx.lineTo(x, y);
                 ctx.stroke();
                 if (i == N) {
@@ -141,7 +141,7 @@ export class MapComponent {
                     callback();
                 }
                 i++;
-            }, 100);
+            }, 50);
 
         }
 
@@ -164,7 +164,7 @@ export class MapComponent {
                 y += dy;
                 if (Math.hypot(x2 - x, y2 - y) < 2)
                     clearInterval(t);
-            }, 100);
+            }, 50);
         }
 
     }

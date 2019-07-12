@@ -25,7 +25,7 @@ const SCALE_FACTOR = 1.2;
             border: solid 1px black;
         }
         button {
-            min-width: 50px;
+             min-width: 50px;
              padding: 0;
          }
         #help {
@@ -37,17 +37,10 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-            <select #selFrom [style.width]="boxWidth" (change)="from(selFrom.value)" value="{{fromTag}}">
-                <option *ngFor="let tag of fromTags" [value]="tag">
-                    {{tag}}
-                </option>
-            </select>
-            <select #selTo [style.width]="boxWidth" (change)="to(selTo.value)" value="{{''}}">
-                <option *ngFor="let tag of toTags" [value]="tag">
-                    {{tag}}
-                </option>
-            </select>
 
+            <menu-tags [tags]="fromTags" [selTag]="fromTag" (open)="hideMap()" (close)="from($event)" [width]="boxWidth" ></menu-tags>
+            <menu-tags [tags]="toTags" [selTag]="'?'" (open)="hideMap()" (close)="to($event)" [width]="boxWidth" ></menu-tags>
+            
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)">+</button>
             <button mat-stroked-button (click)="changeScale(false)">-</button>
@@ -55,7 +48,7 @@ const SCALE_FACTOR = 1.2;
         </div>
 
         <map [style.display]="mapDisplay"></map>
-        <div id="help" [style.display]="halpDisplay">
+        <div id="help" [style.display]="helpDisplay">
             <h1>Инструкция</h1>
             <p>Из первого списка выберите "откуда".
             <p>Из второго списка выберите "куда".
@@ -76,7 +69,7 @@ export class AppComponent
     toTags: string[];
     boxWidth: string;
     mapDisplay: string = 'block';
-    halpDisplay: string = 'none';
+    helpDisplay: string = 'none';
     fromTag: string = "ВХОД";
 
     constructor(private guiderService: GuiderService){
@@ -85,7 +78,6 @@ export class AppComponent
         this.toTags = guiderService.getToTags();
         // buttons layout
         let width = ((screen.width - 4 * 50) / 2) | 0;
-        if (width > 100) width = 100;
         this.boxWidth = width + 'px';
     }
 
@@ -96,10 +88,12 @@ export class AppComponent
     }
 
     from(tag: string) {
+        this.mapDisplay = "block";
         this.fromTag = tag;
     }
 
     to(tag: string) {
+        this.mapDisplay = "block";
         let path = this.guiderService.findPath(this.fromTag, tag);
         if (path == null)
             console.error("No path exists.");
@@ -115,7 +109,11 @@ export class AppComponent
 
     help() {
         this.mapDisplay = this.mapDisplay == 'none' ? 'block' : 'none';
-        this.halpDisplay = this.halpDisplay == 'none' ? 'block' : 'none';
+        this.helpDisplay = this.helpDisplay == 'none' ? 'block' : 'none';
     }
 
+
+     hideMap() {
+        this.mapDisplay = "none";
+    }
 }

@@ -1,15 +1,16 @@
 ﻿import {NgModule}      from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatSelectModule} from '@angular/material';
+import {MatMenuModule, MatButtonModule} from '@angular/material'
 
 import {MapComponent}   from './map.component';
 import {AppComponent} from "./app.component";
 import {GuiderService} from './data/guider.service';
+import {MenuTags} from "./menu.component";
 
 @NgModule({
-    imports: [BrowserModule, BrowserAnimationsModule, MatButtonModule, MatSelectModule],
-    declarations: [AppComponent, MapComponent],
+    imports: [BrowserModule, BrowserAnimationsModule, MatButtonModule, MatMenuModule],
+    declarations: [AppComponent, MapComponent, MenuTags],
     providers: [GuiderService],
     bootstrap: [AppComponent]
 })

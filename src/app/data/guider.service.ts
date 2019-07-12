@@ -142,8 +142,6 @@ export class GuiderService{
             let ez = a.z == b.z && b.z == c.z;
 
             return ex && ez || ey && ez;
-
-
         }
     }
 

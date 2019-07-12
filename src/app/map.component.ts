@@ -123,15 +123,15 @@ export class MapComponent {
 
         // external vars: ctx, k, up_down
         function ladderAnime(x: number, y: number, callback: any) {
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             const d = 5 * k;
-            const N = 7 * Math.abs(up_down);
+            const N = 10;
             let i = 0;
             const t = setInterval(function() {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
                 if (i % 2)
-                    x += d;
+                    x += i < N / 2 ? d : -d;
                 else
                     y -= d * Math.sign(up_down);
                 ctx.lineTo(x, y);
@@ -148,8 +148,8 @@ export class MapComponent {
 
         // external vars: ctx
         function lineAnime(x1: number, y1: number, x2: number, y2: number) {
-            ctx.lineWidth = 5;
-            const N = (Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) / 10) | 0;
+            ctx.lineWidth = 6;
+            const N = 3;
             const dx = (x2 - x1) / N;
             const dy = (y2 - y1) / N;
             let x = x1;

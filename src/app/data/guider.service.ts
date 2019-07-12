@@ -45,6 +45,7 @@ export class GuiderService{
         let tags = this.getFromTags();
         tags.push('М');
         tags.push('Ж');
+        tags.reverse();
         return tags;
     }
 
@@ -74,7 +75,7 @@ export class GuiderService{
         // main part
         this.Dijkstra(start, finish);
         if (finish.prev != null)
-            return this.restorePath(start, finish);
+            return this.simplifyPath(start, finish);
         // no path found
         return null;
     }
@@ -117,7 +118,9 @@ export class GuiderService{
         }
     }
 
-    private restorePath(start: Vertex, finish: Vertex): Vertex[] {
+    // eliminate extra vertices from the path
+    //
+    private simplifyPath(start: Vertex, finish: Vertex): Vertex[] {
         let path: Vertex[] = [finish];
         for (let v = finish.prev; v != start; v = v.prev) {
             if (!collinear(v))
@@ -128,7 +131,7 @@ export class GuiderService{
         return path;
 
         // true - if given vertex and its prev and next ones lie on a straight line
-        //
+        // ladders newer simplify
         function collinear(b: Vertex): boolean {
             if (b.prev == null)
                 return false;
@@ -137,7 +140,10 @@ export class GuiderService{
             let ex = a.x == b.x && b.x == c.x;
             let ey = a.y == b.y && b.y == c.y;
             let ez = a.z == b.z && b.z == c.z;
-            return ex && ey || ex && ez || ey && ez;
+
+            return ex && ez || ey && ez;
+
+
         }
     }
 

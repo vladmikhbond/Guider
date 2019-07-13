@@ -9,25 +9,20 @@ const SCALE_FACTOR = 1.2;
     styles: [`
         #dash {
             width: 100%;
-            /*min-width: 320px;*/
+            min-width: 320px;
             text-align: center;
             vertical-align: center;
             height: 50px;
             background-color: lightblue;
             margin: 0;
         }
-        select, button {
+        button {
             width: 50px;
+            min-width: 50px;
             height: 50px;
             background-color: aqua;
+            padding: 0;
         }
-        select {
-            border: solid 1px black;
-        }
-        button {
-             min-width: 50px;
-             padding: 0;
-         }
         #help {
             font-size: large;
             text-align: center;
@@ -77,7 +72,7 @@ export class AppComponent
         this.fromTags = guiderService.getFromTags();
         this.toTags = guiderService.getToTags();
         // buttons layout
-        let width = ((screen.availWidth - 4 * 50 - 8) / 2) | 0;
+        let width = ((screen.availWidth - 4 * 50 - 4) / 2) | 0;
         this.boxWidth = width + 'px';
     }
 

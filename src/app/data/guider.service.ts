@@ -45,7 +45,7 @@ export class GuiderService{
         let tags = this.getFromTags();
         tags.push('М');
         tags.push('Ж');
-        tags.reverse();
+        tags.sort();
         return tags;
     }
 

@@ -10,6 +10,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
             height: 50px;
             background-color: aqua;
             border: solid 1px black;
+            padding: 0;
         }
 
         [mat-menu-item] {
@@ -29,7 +30,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 
     template: `
         <button mat-button [matMenuTriggerFor]="menu" (click)="menu_click()"
-                [style.width]="width" [style.max-width]="width">{{selTag}}</button>
+                [style.width]="width" [style.max-width]="width" [style.min-width]="width">{{selTag}}</button>
         <mat-menu #menu="matMenu">
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu1">1</button>
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu2">2</button>

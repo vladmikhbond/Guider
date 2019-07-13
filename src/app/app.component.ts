@@ -38,8 +38,8 @@ const SCALE_FACTOR = 1.2;
     template: `
         <div id="dash">
 
-            <menu-tags [tags]="fromTags" [selTag]="fromTag" (open)="hideMap()" (close)="from($event)" [width]="boxWidth" ></menu-tags>
-            <menu-tags [tags]="toTags" [selTag]="'?'" (open)="hideMap()" (close)="to($event)" [width]="boxWidth" ></menu-tags>
+            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (open)="hideMap()" (close)="from($event)" [width]="boxWidth" ></menu2-tags>
+            <menu2-tags [tags]="toTags" [selTag]="'?'" (open)="hideMap()" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
             
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)">+</button>

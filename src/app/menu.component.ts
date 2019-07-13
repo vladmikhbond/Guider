@@ -19,14 +19,12 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 
     `],
 
-    template: `
-        <div style="display: inline-flex">
-            <button mat-button [matMenuTriggerFor]="menu" (click)="menu_click()"
-                    [style.width]="width" [style.max-width]="width" >{{selTag}}</button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item *ngFor="let tag of tags" (click)="item_click(tag)">{{tag}}</button>
-            </mat-menu>
-        </div>
+    template: `        
+        <button mat-button [matMenuTriggerFor]="menu" (click)="menu_click()"
+                [style.width]="width" [style.max-width]="width" >{{selTag}}</button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let tag of tags" (click)="item_click(tag)">{{tag}}</button>
+        </mat-menu>
     `
 
 

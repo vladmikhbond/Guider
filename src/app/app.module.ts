@@ -7,10 +7,11 @@ import {MapComponent}   from './map.component';
 import {AppComponent} from "./app.component";
 import {GuiderService} from './data/guider.service';
 import {MenuTags} from "./menu.component";
+import {Menu2Tags} from './menu2.component';
 
 @NgModule({
     imports: [BrowserModule, BrowserAnimationsModule, MatButtonModule, MatMenuModule],
-    declarations: [AppComponent, MapComponent, MenuTags],
+    declarations: [AppComponent, MapComponent, MenuTags, Menu2Tags],
     providers: [GuiderService],
     bootstrap: [AppComponent]
 })

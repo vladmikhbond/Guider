@@ -122,20 +122,20 @@ export class MapComponent {
 
 
 
-            lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k,  drawGoal);
+            lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
         }
 
         // external vars: ctx, k, up_down
         function ladderAnime(x: number, y: number, callback: any) {
             ctx.lineWidth = 4;
             const d = 5 * k;
-            const N = 10;
+            const N = 11;
             let i = 0;
             const t = setInterval(function() {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
                 if (i % 2)
-                    x += i < N / 2 ? d : -d;
+                    x += i <= N / 2 ? d : -d;
                 else
                     y -= d * Math.sign(up_down);
                 ctx.lineTo(x, y);
@@ -151,7 +151,7 @@ export class MapComponent {
 
 
         // external vars: ctx
-        function lineAnime(x1: number, y1: number, x2: number, y2: number, callback: any) {
+        function lineAnime(x1: number, y1: number, x2: number, y2: number) {
             ctx.lineWidth = 6;
             const N = 3;
             const dx = (x2 - x1) / N;
@@ -168,7 +168,7 @@ export class MapComponent {
                 y += dy;
                 if (Math.hypot(x2 - x, y2 - y) < 2)
                     clearInterval(t);
-                    callback();
+                    setTimeout(drawGoal, 500);
             }, 50);
         }
 

@@ -9,7 +9,7 @@ const SCALE_FACTOR = 1.2;
     styles: [`
         #dash {
             width: 100%;
-            min-width: 320px;
+            /*min-width: 320px;*/
             text-align: center;
             vertical-align: center;
             height: 50px;
@@ -77,7 +77,7 @@ export class AppComponent
         this.fromTags = guiderService.getFromTags();
         this.toTags = guiderService.getToTags();
         // buttons layout
-        let width = ((screen.width - 4 * 50 - 5) / 2) | 0;
+        let width = ((screen.availWidth - 4 * 50 - 8) / 2) | 0;
         this.boxWidth = width + 'px';
     }
 

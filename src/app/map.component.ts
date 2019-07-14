@@ -6,6 +6,7 @@ const SCALE_FACTOR = 1.2;
 const AUTOSCROLL_PADDING = 30;
 const PATH_COLOR = 'yellow';
 const STEP_COLOR = 'red';
+const PATH_LINE_WIDTH = 5;
 
 
 @Component({
@@ -88,25 +89,43 @@ export class MapComponent {
             0, 0, this.canvas.width, this.canvas.height);
 
         // may be draw path
-        if (this.path.length)
-            this.drawPath();
+        if (!this.path.length) {
+            return;
+        }
+        this.drawPath();
     }
 
     private drawPath() {
         const k = this.scale;
         const path = this.path;
+        const ctx = this.ctx;
+        const idx = this.stepIdx;
+        ctx.lineWidth = PATH_LINE_WIDTH;
+        //
+        ctx.setLineDash([5, 5]);
+        const otherFloorsBefore = path.filter((v, i) => v.z !== this.floorIdx && i <= idx);
+        partOfPath(otherFloorsBefore, STEP_COLOR);
 
-        this.ctx.strokeStyle = PATH_COLOR;
-        this.ctx.lineWidth = 5;
-        this.ctx.beginPath();
-        this.ctx.moveTo(path[0].x * k, path[0].y * k);
-        for (let i = 1; i < path.length; i++) {
-            this.ctx.lineTo(path[i].x * k, path[i].y * k);
+        const otherFloorsAfter = path.filter((v, i) => v.z !== this.floorIdx && i >= idx);
+        partOfPath(otherFloorsAfter, PATH_COLOR);
+
+        ctx.setLineDash([]);
+        const thisFloorBefore = path.filter((v, i) => v.z === this.floorIdx && i <= idx);
+        partOfPath(thisFloorBefore, STEP_COLOR);
+
+        const thisFloorAfter = path.filter((v, i) => v.z === this.floorIdx && i >= idx);
+        partOfPath(thisFloorAfter, PATH_COLOR);
+
+
+        function partOfPath(part: Vertex[], color: string) {
+            ctx.beginPath();
+            for (let i = 0; i < part.length - 1; i++) {
+                ctx.moveTo(part[i].x * k, part[i].y * k);
+                ctx.lineTo(part[i+1].x * k, part[i+1].y * k);
+            }
+            ctx.strokeStyle = color;
+            ctx.stroke();
         }
-        this.ctx.stroke();
-
-        if (this.stepIdx == -1)
-            return;
 
     }
 
@@ -117,23 +136,23 @@ export class MapComponent {
         const ctx = this.ctx;
         ctx.strokeStyle = STEP_COLOR;
         ctx.lineCap = "round";
-        const up_down = path[i+1].z - path[i].z;
+        const upDown = path[i+1].z - path[i].z;
         const me = this;
 
-        if (up_down) {
+        if (upDown) {
             ladderAnime(path[i].x * k, path[i].y * k);
         } else {
             lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
         }
 
-        // externals: ctx, k, up_down, me
+        // externals: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
             ctx.fillStyle = PATH_COLOR;
-            const N = 3, w = 15, h = 3, d = 5;
+            const n = 3, w = 15, h = 3, d = 5;
             let i = 0;
             const t = setInterval(function() {
-                ctx.fillRect(x - w / 2, y - d - i * d * up_down, w, h);
-                if (i == N) {
+                ctx.fillRect(x - w / 2, y - d - i * d * upDown, w, h);
+                if (i == n) {
                     clearInterval(t);
                     me.redraw();
                 }
@@ -143,13 +162,13 @@ export class MapComponent {
         }
 
         // external: ctx
-        function lineAnime(x1: number, y1: number, x2: number, y2: number) {
+        function lineAnime(xFrom: number, yFrom: number, xTo: number, yTo: number) {
             ctx.lineWidth = 6;
-            const N = 3;
-            const dx = (x2 - x1) / N;
-            const dy = (y2 - y1) / N;
-            let x = x1;
-            let y = y1;
+            const n = 3;
+            const dx = (xTo - xFrom) / n;
+            const dy = (yTo - yFrom) / n;
+            let x = xFrom;
+            let y = yFrom;
 
             const t = setInterval(function() {
                 ctx.beginPath();
@@ -158,15 +177,17 @@ export class MapComponent {
                 ctx.stroke();
                 x += dx;
                 y += dy;
-                if (Math.hypot(x2 - x, y2 - y) < 2)
+                if (Math.hypot(xTo - x, yTo - y) < 2) {
                     clearInterval(t);
+                }
                 // if step is last
-                if (i == path.length - 2)
+                if (i == path.length - 2) {
                     setTimeout(drawGoal, 300);
+                }
             }, 50);
         }
 
-        // externals: i, path, ctx, k, up_down
+        // externals: i, path, ctx, k, upDown
         function drawGoal() {
             let target = path[i + 1];
             circle(12, PATH_COLOR);

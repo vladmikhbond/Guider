@@ -23,6 +23,12 @@ const SCALE_FACTOR = 1.2;
             background-color: aqua;
             padding: 0;
         }
+        .more {
+          
+            width: 35px;
+            min-width: 35px;
+        }
+        
         #help {
             font-size: large;
             text-align: center;
@@ -37,8 +43,8 @@ const SCALE_FACTOR = 1.2;
             <menu2-tags [tags]="toTags" [selTag]="'?'" (open)="hideMap()" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
             
             <button mat-stroked-button (click)="go()">Go</button>
-            <button mat-stroked-button (click)="changeScale(true)">+</button>
-            <button mat-stroked-button (click)="changeScale(false)">-</button>
+            <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
+            <button mat-stroked-button (click)="changeScale(false)" class="more">-</button>
             <button mat-stroked-button (click)="help()">Help</button>
         </div>
 
@@ -72,7 +78,7 @@ export class AppComponent
         this.fromTags = guiderService.getFromTags();
         this.toTags = guiderService.getToTags();
         // buttons layout
-        let width = ((screen.availWidth - 4 * 50 - 4) / 2) | 0;
+        let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 2) / 2) | 0;
         this.boxWidth = width + 'px';
     }
 

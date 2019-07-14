@@ -94,7 +94,6 @@ export class AppComponent
             console.error("No path exists.");
         else {
             this.child.path = path;
-            this.child.stepIdx = 0;
         }
     }
 

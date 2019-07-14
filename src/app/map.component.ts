@@ -4,6 +4,9 @@ import {Vertex} from './data/vertex';
 const DASH_HEIGHT = 50;
 const SCALE_FACTOR = 1.2;
 const AUTOSCROLL_PADDING = 30;
+const PATH_COLOR = 'yellow';
+const STEP_COLOR = 'red';
+
 
 @Component({
     selector: 'map',
@@ -71,7 +74,7 @@ export class MapComponent {
         this.redraw();
     }
 
-
+    // ============================ Drawing =====================================
     private redraw() {
         let img = this.currentFloorImage;
         // scale canvas
@@ -93,7 +96,7 @@ export class MapComponent {
         const k = this.scale;
         const path = this.path;
 
-        this.ctx.strokeStyle = "yellow";
+        this.ctx.strokeStyle = PATH_COLOR;
         this.ctx.lineWidth = 5;
         this.ctx.beginPath();
         this.ctx.moveTo(path[0].x * k, path[0].y * k);
@@ -112,45 +115,34 @@ export class MapComponent {
         const path = this.path;
         const i = this.stepIdx;
         const ctx = this.ctx;
-        this.ctx.strokeStyle = "red";
-        this.ctx.lineCap = "round";
+        ctx.strokeStyle = STEP_COLOR;
+        ctx.lineCap = "round";
         const up_down = path[i+1].z - path[i].z;
+        const me = this;
 
         if (up_down) {
-            ladderAnime(path[i].x * k, path[i].y * k, () => this.redraw());
+            ladderAnime(path[i].x * k, path[i].y * k);
         } else {
-
-
-
             lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
         }
 
-        // external vars: ctx, k, up_down
-        function ladderAnime(x: number, y: number, callback: any) {
-            ctx.lineWidth = 4;
-            const d = 5 * k;
-            const N = 11;
+        // externals: ctx, k, up_down, me
+        function ladderAnime(x: number, y: number) {
+            ctx.fillStyle = PATH_COLOR;
+            const N = 3, w = 15, h = 3, d = 5;
             let i = 0;
             const t = setInterval(function() {
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                if (i % 2)
-                    x += i <= N / 2 ? d : -d;
-                else
-                    y -= d * Math.sign(up_down);
-                ctx.lineTo(x, y);
-                ctx.stroke();
+                ctx.fillRect(x - w / 2, y - d - i * d * up_down, w, h);
                 if (i == N) {
                     clearInterval(t);
-                    callback();
+                    me.redraw();
                 }
                 i++;
-            }, 50);
+            }, 300);
 
         }
 
-
-        // external vars: ctx
+        // external: ctx
         function lineAnime(x1: number, y1: number, x2: number, y2: number) {
             ctx.lineWidth = 6;
             const N = 3;
@@ -168,53 +160,49 @@ export class MapComponent {
                 y += dy;
                 if (Math.hypot(x2 - x, y2 - y) < 2)
                     clearInterval(t);
-                    setTimeout(drawGoal, 500);
+                // if step is last
+                if (i == path.length - 2)
+                    setTimeout(drawGoal, 300);
             }, 50);
         }
 
-        // external vars: i, path, ctx, k, up_down
+        // externals: i, path, ctx, k, up_down
         function drawGoal() {
-            // if last step
-            if (i == path.length - 2) {
-                let target = path[i + 1];
-                ctx.fillStyle = "red";
+            let target = path[i + 1];
+            circle(12, PATH_COLOR);
+            circle(9, STEP_COLOR);
+            circle(6, PATH_COLOR);
+            circle(3, STEP_COLOR);
+
+            function circle(r: number, color: string) {
                 ctx.beginPath();
-                ctx.arc(target.x * k, target.y * k, 10, 0,Math.PI*2,true);
-                ctx.stroke();
+                ctx.arc(target.x * k, target.y * k, r, 0, Math.PI * 2, true);
+                ctx.fillStyle = color;
+                ctx.fill();
             }
         }
 
     }
 
-
-
-
-    changeScale(k: number) {
-        // center is a fixed point
-        const box = this.scrollBox;
-        const w = box.clientWidth / 2;
-        const h = (box.clientHeight) / 2;
-        box.scrollLeft = (box.scrollLeft + w) * k - w;
-        box.scrollTop = (box.scrollTop + h) * k - h;
-
-        this.scale *= k;
-        this.redraw();
-    }
-
+    // ============================ Drawing =====================================
 
     set path(arr: Vertex[]) {
         this.pathFld = arr;
-        this.stepIdx = -1;
-        this.floorIdx = this.path[1].z;
+        this.stepIdx = 0;
+        this.floorIdx = this.pathFld[0].z;
         this.redraw();
+        this.autoscroll(this.pathFld[0])
     }
+
     get path() {
         return this.pathFld;
     }
+
     get currentFloorImage() {
         return this.bgImages[this.floorIdx];
     }
 
+    // ============================ Button Click Handlers ==============================
 
     handleStart(evt: TouchEvent) {
         evt.preventDefault();
@@ -246,7 +234,6 @@ export class MapComponent {
         this.yt = yt;
     }
 
-
     step() {
         if (this.stepIdx == this.path.length - 1) {
             this.stepIdx = 0;
@@ -264,6 +251,17 @@ export class MapComponent {
         this.autoscroll(target);
     }
 
+    changeScale(k: number) {
+        // center is a fixed point
+        const box = this.scrollBox;
+        const w = box.clientWidth / 2;
+        const h = (box.clientHeight) / 2;
+        box.scrollLeft = (box.scrollLeft + w) * k - w;
+        box.scrollTop = (box.scrollTop + h) * k - h;
+
+        this.scale *= k;
+        this.redraw();
+    }
 
     autoscroll(target: Vertex) {
         const k = this.scale;
@@ -294,8 +292,6 @@ export class MapComponent {
             let d = box.scrollTop - target.y * k;
             box.scrollTop -= d + AUTOSCROLL_PADDING;
         }
-
-
 
     }
 

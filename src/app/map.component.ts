@@ -7,6 +7,8 @@ const AUTOSCROLL_PADDING = 30;
 const PATH_COLOR = 'yellow';
 const STEP_COLOR = 'red';
 const PATH_LINE_WIDTH = 5;
+const LADDER_ANIME_MSEC = 300;
+const LINE_ANIME_MSEC = 50;
 
 
 @Component({
@@ -103,18 +105,24 @@ export class MapComponent {
         ctx.lineWidth = PATH_LINE_WIDTH;
         //
         ctx.setLineDash([5, 5]);
-        const otherFloorsBefore = path.filter((v, i) => v.z !== this.floorIdx && i <= idx);
-        partOfPath(otherFloorsBefore, STEP_COLOR);
+        const onOtherFloorsBeforeIdx = path.filter((v, i) => v.z !== this.floorIdx && i <= idx);
+        partOfPath(onOtherFloorsBeforeIdx, STEP_COLOR);
 
-        const otherFloorsAfter = path.filter((v, i) => v.z !== this.floorIdx && i >= idx);
-        partOfPath(otherFloorsAfter, PATH_COLOR);
+        const onOtherFloorsAfterIdx = path.filter((v, i) => v.z !== this.floorIdx && i >= idx);
+        partOfPath(onOtherFloorsAfterIdx, PATH_COLOR);
 
         ctx.setLineDash([]);
-        const thisFloorBefore = path.filter((v, i) => v.z === this.floorIdx && i <= idx);
-        partOfPath(thisFloorBefore, STEP_COLOR);
+        const onThisFloorBeforeIdx: Vertex[] = [];
+        for (let i = idx; i >= 0 && path[i].z === path[idx].z ; i--) {
+            onThisFloorBeforeIdx.unshift(path[i]);
+        }
+        partOfPath(onThisFloorBeforeIdx, STEP_COLOR);
 
-        const thisFloorAfter = path.filter((v, i) => v.z === this.floorIdx && i >= idx);
-        partOfPath(thisFloorAfter, PATH_COLOR);
+        const onThisFloorAfterIdx: Vertex[] = [];
+        for (let i = idx; i < path.length && path[i].z === path[idx].z ; i++) {
+            onThisFloorAfterIdx.push(path[i]);
+        }
+        partOfPath(onThisFloorAfterIdx, PATH_COLOR);
 
 
         function partOfPath(part: Vertex[], color: string) {
@@ -148,7 +156,7 @@ export class MapComponent {
         // externals: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
             ctx.fillStyle = PATH_COLOR;
-            const n = 3, w = 15, h = 3, d = 5;
+            const n = 3, h = 3, w = 3 * h, d = 5;
             let i = 0;
             const t = setInterval(function() {
                 ctx.fillRect(x - w / 2, y - d - i * d * upDown, w, h);
@@ -157,13 +165,13 @@ export class MapComponent {
                     me.redraw();
                 }
                 i++;
-            }, 300);
+            }, LADDER_ANIME_MSEC);
 
         }
 
         // external: ctx
         function lineAnime(xFrom: number, yFrom: number, xTo: number, yTo: number) {
-            ctx.lineWidth = 6;
+            ctx.lineWidth = PATH_LINE_WIDTH;
             const n = 3;
             const dx = (xTo - xFrom) / n;
             const dy = (yTo - yFrom) / n;
@@ -182,17 +190,17 @@ export class MapComponent {
                 }
                 // if step is last
                 if (i == path.length - 2) {
-                    setTimeout(drawGoal, 300);
+                    setTimeout(drawGoal, LADDER_ANIME_MSEC);
                 }
-            }, 50);
+            }, LINE_ANIME_MSEC);
         }
 
         // externals: i, path, ctx, k, upDown
         function drawGoal() {
             let target = path[i + 1];
-            circle(12, PATH_COLOR);
-            circle(9, STEP_COLOR);
-            circle(6, PATH_COLOR);
+            circle(3 * 4, PATH_COLOR);
+            circle(3 * 3, STEP_COLOR);
+            circle(3 * 2, PATH_COLOR);
             circle(3, STEP_COLOR);
 
             function circle(r: number, color: string) {

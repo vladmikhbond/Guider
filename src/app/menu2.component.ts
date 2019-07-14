@@ -36,7 +36,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu2">2</button>
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu3">3</button>
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu4">4</button>
-            <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu5">*</button>
+            <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu5" ><b>...</b></button>
         </mat-menu>
         <mat-menu #menu1="matMenu">
             <button mat-menu-item *ngFor="let tag of tags1" (click)="item_click(tag)">{{tag}}</button>

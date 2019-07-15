@@ -78,7 +78,7 @@ export class AppComponent
         this.fromTags = guiderService.getFromTags();
         this.toTags = guiderService.getToTags();
         // buttons layout
-        let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 2) / 2) | 0;
+        let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
         this.boxWidth = width + 'px';
     }
 

@@ -7,7 +7,7 @@ const AUTOSCROLL_PADDING = 30;
 const PATH_COLOR = 'yellow';
 const STEP_COLOR = 'red';
 const PATH_LINE_WIDTH = 5;
-const LADDER_ANIME_MSEC = 300;
+const LADDER_ANIME_MSEC = 200;
 const LINE_ANIME_MSEC = 50;
 
 
@@ -172,7 +172,7 @@ export class MapComponent {
         // external: ctx
         function lineAnime(xFrom: number, yFrom: number, xTo: number, yTo: number) {
             ctx.lineWidth = PATH_LINE_WIDTH;
-            const n = 3;
+            const n = 4;
             const dx = (xTo - xFrom) / n;
             const dy = (yTo - yFrom) / n;
             let x = xFrom;

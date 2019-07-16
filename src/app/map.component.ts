@@ -67,7 +67,7 @@ export class MapComponent {
 
         // scrollBox size
         this.scrollBox = document.getElementById("scrollBox");
-        this.scrollBox.style.height = `${innerHeight - DASH_HEIGHT - 2}px`;
+        this.scrollBox.style.height = `${window.innerHeight - DASH_HEIGHT - 2}px`;
 
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         // touch event handlers

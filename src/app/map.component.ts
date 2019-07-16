@@ -103,28 +103,30 @@ export class MapComponent {
         const ctx = this.ctx;
         const idx = this.stepIdx;
         ctx.lineWidth = PATH_LINE_WIDTH;
+
+        ctx.lineCap = "round";
         //
-        ctx.setLineDash([5, 5]);
+        ctx.setLineDash([0, 10]);
         const onOtherFloorsBeforeIdx = path.filter((v, i) => v.z !== this.floorIdx && i <= idx);
         partOfPath(onOtherFloorsBeforeIdx, STEP_COLOR);
-
+        //
         const onOtherFloorsAfterIdx = path.filter((v, i) => v.z !== this.floorIdx && i >= idx);
         partOfPath(onOtherFloorsAfterIdx, PATH_COLOR);
-
+        //
         ctx.setLineDash([]);
         const onThisFloorBeforeIdx: Vertex[] = [];
         for (let i = idx; i >= 0 && path[i].z === path[idx].z ; i--) {
             onThisFloorBeforeIdx.unshift(path[i]);
         }
         partOfPath(onThisFloorBeforeIdx, STEP_COLOR);
-
+        //
         const onThisFloorAfterIdx: Vertex[] = [];
         for (let i = idx; i < path.length && path[i].z === path[idx].z ; i++) {
             onThisFloorAfterIdx.push(path[i]);
         }
         partOfPath(onThisFloorAfterIdx, PATH_COLOR);
 
-
+        // local
         function partOfPath(part: Vertex[], color: string) {
             ctx.beginPath();
             for (let i = 0; i < part.length - 1; i++) {
@@ -153,7 +155,7 @@ export class MapComponent {
             lineAnime(path[i].x * k, path[i].y * k, path[i + 1].x * k, path[i + 1].y * k);
         }
 
-        // externals: ctx, k, upDown, me
+        // local: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
             ctx.fillStyle = PATH_COLOR;
             const n = 3, h = 3, w = 3 * h, d = 5;
@@ -169,7 +171,7 @@ export class MapComponent {
 
         }
 
-        // external: ctx
+        // local: ctx, me
         function lineAnime(xFrom: number, yFrom: number, xTo: number, yTo: number) {
             ctx.lineWidth = PATH_LINE_WIDTH;
             const n = 4;
@@ -187,6 +189,11 @@ export class MapComponent {
                 y += dy;
                 if (Math.hypot(xTo - x, yTo - y) < 2) {
                     clearInterval(t);
+                    // if next step is short do it automatic
+                    let v = path[i + 1], u = path[i + 2];
+                    if (i < path.length - 2 && v.distTo(u) < DASH_HEIGHT && v.z === u.z) {
+                        me.step();
+                    }
                 }
                 // if step is last
                 if (i == path.length - 2) {
@@ -195,14 +202,14 @@ export class MapComponent {
             }, LINE_ANIME_MSEC);
         }
 
-        // externals: i, path, ctx, k, upDown
+        // local: i, path, ctx, k, upDown
         function drawGoal() {
             let target = path[i + 1];
             circle(3 * 4, PATH_COLOR);
             circle(3 * 3, STEP_COLOR);
             circle(3 * 2, PATH_COLOR);
             circle(3, STEP_COLOR);
-
+            // local
             function circle(r: number, color: string) {
                 ctx.beginPath();
                 ctx.arc(target.x * k, target.y * k, r, 0, Math.PI * 2, true);

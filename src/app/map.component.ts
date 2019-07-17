@@ -1,4 +1,4 @@
-﻿import {Component} from '@angular/core';
+﻿import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Vertex} from './data/vertex';
 
 const DASH_HEIGHT = 50;
@@ -26,7 +26,7 @@ const LINE_ANIME_MSEC = 50;
     `],
     template: `
         <div id="scrollBox" >
-            <canvas id="canvas"></canvas>
+            <canvas #canvas ></canvas>
         </div>
         
         <img id="floor1" [src]="'assets/floors/1.svg'" hidden alt="floor1"  (load)="init()" />
@@ -42,7 +42,12 @@ export class MapComponent {
 
     bgImages: HTMLImageElement[];
     scrollBox: HTMLElement;
-    canvas: HTMLCanvasElement;
+
+    @ViewChild('canvas', {static: false})
+    canvas: ElementRef<HTMLCanvasElement>;
+
+
+   // canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     stepIdx: number;
 
@@ -69,26 +74,26 @@ export class MapComponent {
         this.scrollBox = document.getElementById("scrollBox");
         this.scrollBox.style.height = `${innerHeight - DASH_HEIGHT - 2}px`;
 
-        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         // touch event handlers
-        this.canvas.addEventListener("touchstart",  e => this.handleStart(e), false);
-        this.canvas.addEventListener("touchmove", e => this.handleMove(e), false);
+        this.canvas.nativeElement.addEventListener("touchstart",  e => this.handleStart(e), false);
+        this.canvas.nativeElement.addEventListener("touchmove", e => this.handleMove(e), false);
 
         this.redraw();
     }
 
     // ============================ Drawing =====================================
     private redraw() {
-        let img = this.currentFloorImage;
+        const img = this.currentFloorImage;
+        const canvas = this.canvas.nativeElement;
         // scale canvas
-        this.canvas.width = img.width * this.scale;
-        this.canvas.height = img.height * this.scale;
-        this.ctx = this.canvas.getContext("2d");
+        canvas.width = img.width * this.scale;
+        canvas.height = img.height * this.scale;
+        this.ctx = canvas.getContext("2d");
 
         // draw image
         this.ctx.drawImage(img,
             0, 0, img.width, img.height,
-            0, 0, this.canvas.width, this.canvas.height);
+            0, 0, canvas.width, canvas.height);
 
         // may be draw path
         if (!this.path.length) {

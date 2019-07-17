@@ -50,22 +50,22 @@ export class GuiderService{
     }
 
 
-    private vertexByTag(tag: string):Vertex  {
+    private vertcesByTag(tag: string): Vertex[]  {
+        const res: Vertex[] = [];
         tag = ',' + tag + ',';
         for (let v of this.vertices) {
             if ((',' + v.tags + ',').indexOf(tag) != -1)
-                return v;
+                res.push(v);
         }
-        console.error(`No vertex with tag "${tag}"`);
-        return null;
+        return res;
     }
 
 
     // main
     //
     findPath(fromTag: string, toTag: string): Vertex[] {
-        let start = this.vertexByTag(fromTag);
-        let finish = this.vertexByTag(toTag);
+        let start = this.vertcesByTag(fromTag)[0];
+        let targets = this.vertcesByTag(toTag);
         // init all vertices
         this.vertices.forEach(v => {
            v.isStable = false;
@@ -73,7 +73,7 @@ export class GuiderService{
            v.prev = null;
         });
         // main part
-        this.Dijkstra(start, finish);
+        const finish = this.Dijkstra(start, targets);
         if (finish.prev != null)
             return this.simplifyPath(start, finish);
         // no path found
@@ -82,7 +82,7 @@ export class GuiderService{
 
     // Path is not found if finish.prev == null
     //
-    private Dijkstra(start: Vertex, finish: Vertex): void {
+    private Dijkstra(start: Vertex, targets: Vertex[]): Vertex {
         // do start vertex the first stable
         let stable = start;
         stable.dist = 0;
@@ -90,7 +90,8 @@ export class GuiderService{
 
         // dijkstra iteration
         let tempSet = [];
-        while(stable != finish) {
+        let i = targets.indexOf(stable);
+        while(i === -1) {
             // process stable's adjacent and move any of them to tempSet
             for(let v of stable.adjacent.filter(v => !v.isStable)) {
                 let distToStable = stable.dist + stable.distTo(v);
@@ -105,7 +106,7 @@ export class GuiderService{
 
             // no path exists
             if (tempSet.length == 0)
-                return;
+                return null;
 
             // find next stable vertex in the tempSet
             let minDist = Math.min(...tempSet.map(v => v.dist));
@@ -115,7 +116,10 @@ export class GuiderService{
             stable = tempSet[idx];
             stable.isStable = true;
             tempSet.splice(idx, 1);
+
+            i = targets.indexOf(stable);
         }
+        return targets[i];
     }
 
     // eliminate extra vertices from the path

@@ -1,6 +1,14 @@
 ﻿const path = require('path');
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
+    optimization: {
+        minimizer: [new UglifyJsPlugin({
+            extractComments: true,
+        })],
+    },
+    mode: 'production',
     entry: {
         'polyfills': './src/polyfills.ts',
         'app': './src/main.ts'
@@ -36,6 +44,6 @@ module.exports = {
         path.resolve(__dirname, 'src'), // каталог с исходными файлами
       {} // карта маршрутов
     )
-    //, new UglifyJSPlugin()
+    , new UglifyJsPlugin()
   ]
 }

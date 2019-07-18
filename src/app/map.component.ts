@@ -162,7 +162,7 @@ export class MapComponent {
 
         // local: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
-            ctx.fillStyle = PATH_COLOR;
+            ctx.fillStyle = STEP_COLOR;
             const n = 3, h = 3, w = 3 * h, d = 5;
             let i = 0;
             const t = setInterval(function() {

@@ -1,5 +1,4 @@
 import {Vertex} from "./vertex";
-import {data} from "./data";
 
 const INF = Number.MAX_SAFE_INTEGER;
 
@@ -8,6 +7,7 @@ export class GuiderService{
     vertices: Vertex[];
 
     constructor() {
+        // @ts-ignore
         this.parse(data);
     }
 

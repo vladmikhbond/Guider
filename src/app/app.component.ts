@@ -13,7 +13,7 @@ const SCALE_FACTOR = 1.2;
             text-align: center;
             vertical-align: center;
             height: 50px;
-            background-color: lightblue;
+            
             margin: 0;
         }
         button {
@@ -28,12 +28,15 @@ const SCALE_FACTOR = 1.2;
             width: 35px;
             min-width: 35px;
         }
-        
+
         #help {
-            font-size: large;
+            font-size: 16px;
             text-align: center;
-            background-color: lemonchiffon;
-            padding: 20px;
+            padding: 10px;
+        }
+        #legend {
+            font-size: 12px;
+            text-align: left;
         }
     `],
     template: `
@@ -49,14 +52,22 @@ const SCALE_FACTOR = 1.2;
         </div>
 
         <map [style.display]="mapDisplay"></map>
+        
         <div id="help" [style.display]="helpDisplay">
             <h1>Инструкция</h1>
             <p>Первой кнопкой выберите "откуда".
             <p>Второй кнопкой выберите "куда".
             <p>Жмите на кнопку Go и идите.
             <h2>Счастливого пути!</h2>
-            <hr/>
+
             <p>Рекомендуемый мобильный браузер - Chrome.
+
+            <div id="legend">
+                Желтый - непройденный путь<br/>
+                Красный - пройденный путь<br/>
+                Сплошной - путь на видимом этаже<br/>
+                Пунктир - путь на невидимых этажах<br/>
+            </div>
         </div>
     `
 })
@@ -71,7 +82,7 @@ export class AppComponent
     mapDisplay: string = 'block';
     helpDisplay: string = 'none';
     fromTag: string = "ВХОД";
-
+    toTag: string  =  "?";
     constructor(private guiderService: GuiderService){
         // from-to definition
         this.fromTags = guiderService.getFromTags();
@@ -90,16 +101,13 @@ export class AppComponent
     from(tag: string) {
         this.mapDisplay = "block";
         this.fromTag = tag;
+        this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
     }
 
     to(tag: string) {
         this.mapDisplay = "block";
-        let path = this.guiderService.findPath(this.fromTag, tag);
-        if (path == null)
-            console.error("No path exists.");
-        else {
-            this.child.path = path;
-        }
+        this.toTag = tag;
+        this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
     }
 
     go() {

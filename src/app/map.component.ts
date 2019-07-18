@@ -231,8 +231,8 @@ export class MapComponent {
         this.pathFld = arr;
         this.stepIdx = 0;
         this.floorIdx = this.pathFld[0].z;
-        this.redraw();
         this.autoscroll(this.pathFld[0])
+        this.redraw();
     }
 
     get path() {

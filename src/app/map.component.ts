@@ -179,11 +179,12 @@ export class MapComponent {
         // local: ctx, me
         function lineAnime(xFrom: number, yFrom: number, xTo: number, yTo: number) {
             ctx.lineWidth = PATH_LINE_WIDTH;
-            const n = 4;
+            let n = 3;
             const dx = (xTo - xFrom) / n;
             const dy = (yTo - yFrom) / n;
             let x = xFrom;
             let y = yFrom;
+            // let animIdx = 0;
 
             const t = setInterval(function() {
                 ctx.beginPath();
@@ -192,18 +193,20 @@ export class MapComponent {
                 ctx.stroke();
                 x += dx;
                 y += dy;
-                if (Math.hypot(xTo - x, yTo - y) < 2) {
+                // the anime shot is last
+                if (n === 1) {
                     clearInterval(t);
-                    // if next step is short do it automatic
+                    // if the next step is short do it now
                     let v = path[i + 1], u = path[i + 2];
                     if (i < path.length - 2 && v.distTo(u) < DASH_HEIGHT && v.z === u.z) {
                         me.step();
                     }
+                    // the step is last
+                    if (i == path.length - 2) {
+                        setTimeout(drawGoal, LADDER_ANIME_MSEC);
+                    }
                 }
-                // if step is last
-                if (i == path.length - 2) {
-                    setTimeout(drawGoal, LADDER_ANIME_MSEC);
-                }
+                n--;
             }, LINE_ANIME_MSEC);
         }
 

@@ -110,26 +110,33 @@ export class MapComponent {
         ctx.lineWidth = PATH_LINE_WIDTH;
 
         ctx.lineCap = "round";
-        //
+        // draw unvisible yellow path
         ctx.setLineDash([0, 10]);
         const onOtherFloorsBeforeIdx = path.filter((v, i) => v.z !== this.floorIdx && i <= idx);
         partOfPath(onOtherFloorsBeforeIdx, STEP_COLOR);
-        //
+
+        // draw unvisible red path
         const onOtherFloorsAfterIdx = path.filter((v, i) => v.z !== this.floorIdx && i >= idx);
         partOfPath(onOtherFloorsAfterIdx, PATH_COLOR);
-        //
+
+        // draw visible yellow path
         ctx.setLineDash([]);
         const onThisFloorBeforeIdx: Vertex[] = [];
         for (let i = idx; i >= 0 && path[i].z === path[idx].z ; i--) {
             onThisFloorBeforeIdx.unshift(path[i]);
         }
         partOfPath(onThisFloorBeforeIdx, STEP_COLOR);
-        //
+
+        // draw visible red path
         const onThisFloorAfterIdx: Vertex[] = [];
         for (let i = idx; i < path.length && path[i].z === path[idx].z ; i++) {
             onThisFloorAfterIdx.push(path[i]);
         }
         partOfPath(onThisFloorAfterIdx, PATH_COLOR);
+
+        drawStartPoint();
+
+
 
         // local
         function partOfPath(part: Vertex[], color: string) {
@@ -142,6 +149,19 @@ export class MapComponent {
             ctx.stroke();
         }
 
+        function drawStartPoint() {
+            let start = path[0];
+            let r = PATH_LINE_WIDTH;
+            ctx.beginPath();
+            ctx.arc(start.x * k, start.y * k, r, 0, Math.PI * 2, true);
+            ctx.fillStyle = STEP_COLOR;
+            ctx.fill();
+            r = PATH_LINE_WIDTH / 2;
+            ctx.beginPath();
+            ctx.arc(start.x * k, start.y * k, r, 0, Math.PI * 2, true);
+            ctx.fillStyle = PATH_COLOR;
+            ctx.fill();
+        }
     }
 
     private drawStep() {
@@ -234,7 +254,7 @@ export class MapComponent {
         this.pathFld = arr;
         this.stepIdx = 0;
         this.floorIdx = this.pathFld[0].z;
-        this.autoscroll(this.pathFld[0])
+        this.autoscroll(this.pathFld[0]);
         this.redraw();
     }
 

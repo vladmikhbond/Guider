@@ -8,7 +8,6 @@ module.exports = {
             extractComments: true,
         })],
     },
-    mode: 'production',
     entry: {
         'polyfills': './src/polyfills.ts',
         'app': './src/main.ts'

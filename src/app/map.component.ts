@@ -136,8 +136,6 @@ export class MapComponent {
 
         drawStartPoint();
 
-
-
         // local
         function partOfPath(part: Vertex[], color: string) {
             ctx.beginPath();
@@ -151,16 +149,17 @@ export class MapComponent {
 
         function drawStartPoint() {
             let start = path[0];
-            let r = PATH_LINE_WIDTH;
-            ctx.beginPath();
-            ctx.arc(start.x * k, start.y * k, r, 0, Math.PI * 2, true);
-            ctx.fillStyle = STEP_COLOR;
-            ctx.fill();
-            r = PATH_LINE_WIDTH / 2;
-            ctx.beginPath();
-            ctx.arc(start.x * k, start.y * k, r, 0, Math.PI * 2, true);
-            ctx.fillStyle = PATH_COLOR;
-            ctx.fill();
+            circle(PATH_LINE_WIDTH, STEP_COLOR);
+            circle(PATH_LINE_WIDTH / 2, PATH_COLOR);
+
+            // local
+            function circle(r: number, color: string) {
+                ctx.beginPath();
+                ctx.arc(start.x * k, start.y * k, r, 0, Math.PI * 2, true);
+                ctx.fillStyle = color;
+                ctx.fill();
+
+            }
         }
     }
 
@@ -183,7 +182,7 @@ export class MapComponent {
         // local: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
             ctx.fillStyle = STEP_COLOR;
-            const n = 3, h = 3, w = 3 * h, d = 5;
+            const n = 3, h = 3, w = 5 * h, d = 5;
             let i = 0;
             const t = setInterval(function() {
                 ctx.fillRect(x - w / 2, y - d - i * d * upDown, w, h);
@@ -248,13 +247,12 @@ export class MapComponent {
 
     }
 
-    // ============================ Drawing =====================================
+    // ============================ Properties =====================================
 
     set path(arr: Vertex[]) {
         this.pathFld = arr;
         this.stepIdx = 0;
         this.floorIdx = this.pathFld[0].z;
-        this.autoscroll(this.pathFld[0]);
         this.redraw();
     }
 
@@ -266,7 +264,7 @@ export class MapComponent {
         return this.bgImages[this.floorIdx];
     }
 
-    // ============================ Button Click Handlers ==============================
+    // ============================ Touch Event Handlers ==============================
 
     handleStart(evt: TouchEvent) {
         evt.preventDefault();
@@ -298,6 +296,8 @@ export class MapComponent {
         this.yt = yt;
     }
 
+    // ===================================================================
+
     step() {
         if (this.stepIdx == this.path.length - 1) {
             this.stepIdx = 0;
@@ -311,8 +311,8 @@ export class MapComponent {
         }
 
         // autoscroll
-        let target = this.path[this.stepIdx];
-        this.autoscroll(target);
+        let steoTarget = this.path[this.stepIdx];
+        this.autoscroll(steoTarget);
     }
 
     changeScale(k: number) {

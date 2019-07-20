@@ -102,12 +102,20 @@ export class AppComponent
         this.mapDisplay = "block";
         this.fromTag = tag;
         this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
+        this.delayedAutoscroll();
     }
 
     to(tag: string) {
         this.mapDisplay = "block";
         this.toTag = tag;
         this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
+        this.delayedAutoscroll();
+    }
+
+    private delayedAutoscroll() {
+        setTimeout(() => {
+            this.child.autoscroll(this.child.path[0])
+        }, 0);
     }
 
     go() {

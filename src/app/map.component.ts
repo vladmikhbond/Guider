@@ -22,6 +22,9 @@ const LINE_ANIME_MSEC = 50;
             min-width: 320px;
             overflow: auto;
             border: thin solid lightblue;
+       
+            position: absolute;
+            top: 50px;
         }
     `],
     template: `

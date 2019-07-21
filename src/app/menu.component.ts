@@ -6,31 +6,37 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 @Component({
     selector: 'menu2-tags',
     styles: [`
-        [mat-button] {
+         [mat-button] {
             height: 50px;
             background-color: aqua;
             border: solid 1px black;
             padding: 0;
+            max-width: 150px;
         }
 
-        [mat-menu-item] {
-            width: 150px;
-            height: 30px;
-            background-color: aqua;
-        }
+         .menuPanel {
+             border: thin solid black;         
+         }
 
-        .flat-menu {
+         [mat-menu-item] {
+             width: 150px;
+             height: 30px;
+             background-color: aqua;
+         }
+
+         .flat-menu {
             display: inline;
             width: 50px;
             height: 50px;
             background-color: aqua;
+            border: thin solid gray;
         }
 
     `],
 
     template: `
         <button mat-button [matMenuTriggerFor]="menu" (click)="menu_click()"
-                [style.width]="width" [style.max-width]="width" [style.min-width]="width">{{selTag}}</button>
+                [style.width]="width" >{{selTag}}</button>
         <mat-menu #menu="matMenu">
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu1">1</button>
             <button class="flat-menu" mat-menu-item [matMenuTriggerFor]="menu2">2</button>

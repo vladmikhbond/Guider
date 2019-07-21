@@ -54,8 +54,9 @@ export class GuiderService{
         const res: Vertex[] = [];
         tag = ',' + tag + ',';
         for (let v of this.vertices) {
-            if ((',' + v.tags + ',').indexOf(tag) != -1)
+            if ((',' + v.tags + ',').indexOf(tag) != -1) {
                 res.push(v);
+            }
         }
         return res;
     }
@@ -64,8 +65,14 @@ export class GuiderService{
     // main
     //
     findPath(fromTag: string, toTag: string): Vertex[] {
-        let start = this.vertcesByTag(fromTag)[0];
+
+        let starts = this.vertcesByTag(fromTag);
         let targets = this.vertcesByTag(toTag);
+        if (!starts.length || !targets.length) {
+            return null;
+        }
+
+        let start = this.vertcesByTag(fromTag)[0];
         // init all vertices
         this.vertices.forEach(v => {
            v.isStable = false;

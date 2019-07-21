@@ -12,8 +12,8 @@ const SCALE_FACTOR = 1.2;
             min-width: 320px;
             text-align: center;
             vertical-align: center;
+            position: fixed;
             height: 50px;
-            
             margin: 0;
         }
         button {
@@ -33,6 +33,9 @@ const SCALE_FACTOR = 1.2;
             font-size: 16px;
             text-align: center;
             padding: 10px;
+            position: absolute;
+            top: 50px;
+
         }
         #legend {
             font-size: 12px;
@@ -42,8 +45,8 @@ const SCALE_FACTOR = 1.2;
     template: `
         <div id="dash">
 
-            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (open)="hideMap()" (close)="from($event)" [width]="boxWidth" ></menu2-tags>
-            <menu2-tags [tags]="toTags" [selTag]="'?'" (open)="hideMap()" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
+            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>
+            <menu2-tags [tags]="toTags" [selTag]="'?'" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
             
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
@@ -99,17 +102,22 @@ export class AppComponent
     }
 
     from(tag: string) {
-        this.mapDisplay = "block";
         this.fromTag = tag;
-        this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
-        this.delayedAutoscroll();
+        this.createRoute();
     }
 
     to(tag: string) {
-        this.mapDisplay = "block";
         this.toTag = tag;
-        this.child.path = this.guiderService.findPath(this.fromTag, this.toTag);
-        this.delayedAutoscroll();
+        this.createRoute();    }
+
+    private createRoute() {
+        let path = this.guiderService.findPath(this.fromTag, this.toTag);
+        if (path) {
+            this.child.path = path;
+            setTimeout(() => {
+                this.child.autoscroll(this.child.path[0])
+            }, 0)
+        }
     }
 
     private delayedAutoscroll() {
@@ -119,8 +127,8 @@ export class AppComponent
     }
 
     go() {
-        this.mapDisplay = 'block';
-        this.child.step();
+        if (this.child.path.length > 0)
+            this.child.step();
     }
 
     help() {
@@ -129,7 +137,4 @@ export class AppComponent
     }
 
 
-     hideMap() {
-        this.mapDisplay = "none";
-    }
 }

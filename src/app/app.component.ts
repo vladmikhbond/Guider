@@ -24,29 +24,23 @@ const SCALE_FACTOR = 1.2;
             padding: 0;
         }
         .more {
-          
             width: 35px;
             min-width: 35px;
         }
-
         #help {
             font-size: 16px;
             text-align: center;
             padding: 10px;
             position: absolute;
             top: 50px;
-
-        }
-        #legend {
-            font-size: 12px;
-            text-align: left;
+            width: 100%;
         }
     `],
     template: `
         <div id="dash">
 
             <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>
-            <menu2-tags [tags]="toTags" [selTag]="'?'" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
+            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
             
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
@@ -62,15 +56,16 @@ const SCALE_FACTOR = 1.2;
             <p>Второй кнопкой выберите "куда".
             <p>Жмите на кнопку Go и идите.
             <h2>Счастливого пути!</h2>
-
-            <p>Рекомендуемый мобильный браузер - Chrome.
-
-            <div id="legend">
+            <div id="legend">            
+                <h3>Легенда</h3>
                 Желтый - непройденный путь<br/>
                 Красный - пройденный путь<br/>
                 Сплошной - путь на видимом этаже<br/>
                 Пунктир - путь на невидимых этажах<br/>
             </div>
+            <hr/>
+            <p>Рекомендуемый мобильный браузер - Chrome.
+
         </div>
     `
 })

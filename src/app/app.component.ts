@@ -38,8 +38,9 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
+            <app-tmenu [selTag]="fromTag"  [upItems]="upItems" [itemLists]="itemLists" (open)="openMenu()" (itemSelected)="from($event)"></app-tmenu>
 
-            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>
+<!--            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>-->
             <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
             
             <button mat-stroked-button (click)="go()">Go</button>
@@ -81,29 +82,43 @@ export class AppComponent
     helpDisplay: string = 'none';
     fromTag: string = "ВХОД";
     toTag: string  =  "?";
-    constructor(private guiderService: GuiderService){
+
+
+    upItems = ["1", "2", "3", "4", "5", "..."];
+    itemLists = [ ["101и", "102и", "103и"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"]];
+
+
+        constructor(private guiderService: GuiderService){
         // from-to definition
         this.fromTags = guiderService.getFromTags();
         this.toTags = guiderService.getToTags();
         // buttons layout
         let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
         this.boxWidth = width + 'px';
+
+
+
     }
-
-
     changeScale(increase: boolean) {
         let k = increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
         this.child.changeScale(k);
     }
 
+    openMenu() {
+        this.mapDisplay = 'none';
+    }
+
     from(tag: string) {
         this.fromTag = tag;
         this.createRoute();
+        this.mapDisplay = 'block';
     }
 
     to(tag: string) {
         this.toTag = tag;
-        this.createRoute();    }
+        this.createRoute();
+        this.mapDisplay = 'block';
+    }
 
     private createRoute() {
         let path = this.guiderService.findPath(this.fromTag, this.toTag);

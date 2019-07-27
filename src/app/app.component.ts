@@ -38,11 +38,14 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-            <app-tmenu [selTag]="fromTag"  [upItems]="upItems" [itemLists]="itemLists" (open)="openMenu()" (itemSelected)="from($event)"></app-tmenu>
+            <app-tmenu [selTag]="fromTag" [upItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
+                       (itemSelected)="from($event)"></app-tmenu>
+            <app-tmenu [selTag]="toTag" [upItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
+                       (itemSelected)="to($event)"></app-tmenu>
 
 <!--            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>-->
-            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth" ></menu2-tags>
-            
+<!--            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth"></menu2-tags>-->
+
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
             <button mat-stroked-button (click)="changeScale(false)" class="more">-</button>
@@ -50,14 +53,14 @@ const SCALE_FACTOR = 1.2;
         </div>
 
         <map [style.display]="mapDisplay"></map>
-        
+
         <div id="help" [style.display]="helpDisplay">
             <h1>Инструкция</h1>
             <p>Первой кнопкой выберите "откуда".
             <p>Второй кнопкой выберите "куда".
             <p>Жмите на кнопку Go и идите.
             <h2>Счастливого пути!</h2>
-            <div id="legend">            
+            <div id="legend">
                 <h3>Легенда</h3>
                 Желтый - непройденный путь<br/>
                 Красный - пройденный путь<br/>
@@ -75,30 +78,42 @@ export class AppComponent
     @ViewChild(MapComponent, {static: false})
     child: MapComponent;
 
-    fromTags: string[];
-    toTags: string[];
-    boxWidth: string;
+    // fromTags: string[];
+    // toTags: string[];
+    // boxWidth: string;
     mapDisplay: string = 'block';
     helpDisplay: string = 'none';
     fromTag: string = "ВХОД";
     toTag: string  =  "?";
 
 
-    upItems = ["1", "2", "3", "4", "5", "..."];
-    itemLists = [ ["101и", "102и", "103и"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"], ["101", "102", "103"]];
+    upItems = ["1", "2", "3", "4", "и др."];
+    fromItemLists: string[][];
+    toItemLists: string[][];
 
-
-        constructor(private guiderService: GuiderService){
+    constructor(private guiderService: GuiderService){
         // from-to definition
-        this.fromTags = guiderService.getFromTags();
-        this.toTags = guiderService.getToTags();
+        // this.fromTags = guiderService.getFromTags();
+        // this.toTags = guiderService.getToTags();
+        //
+        this.fromItemLists = this.getItemLists(guiderService.getFromTags());
+        this.toItemLists = this.getItemLists(guiderService.getToTags());
+
         // buttons layout
-        let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
-        this.boxWidth = width + 'px';
-
-
-
+        // let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
+        // this.boxWidth = width + 'px';
     }
+
+    private getItemLists(tags: string[] ): string[][] {
+        const res = [];
+        for (let i = 0; i < 4; i++)
+        {
+            res.push(tags.filter(t => t.startsWith(this.upItems[i])))
+        }
+        res.push(tags.filter(t => !t.startsWith("1") && !t.startsWith("2") && !t.startsWith("3") && !t.startsWith("4")));
+        return res;
+    }
+
     changeScale(increase: boolean) {
         let k = increase ? SCALE_FACTOR : 1 / SCALE_FACTOR;
         this.child.changeScale(k);

@@ -15,22 +15,23 @@ import {
   selector: `app-tmenu`,
   styles: [
     `.mmRoot, .mmUpperItem, .mmItem {
-      background-color: aquamarine;
+      background-color: aqua;
       width: 70px;
       min-width: 70px;
       max-width: 70px;
     }`,
 
       `.mmUpperItem, .mmItem {
-      padding-top: 18px;
+      padding-top: 10px;
       text-align: center;
-      border-bottom: solid thin black;
-      height: 36px;
+      
+      border-bottom: solid 1px black;
+      height: 40px;
 
     }`,
 
       `.mmUpperItem {
-      margin-bottom: -15px;
+      margin-bottom: -10px;
     }`,
     `.mmItem {
 
@@ -38,6 +39,7 @@ import {
 
       `.mmRoot {
       height: 50px;
+      border: black 1px solid;
      }`,
       `.mmUpperCont {
       display: none;
@@ -46,7 +48,7 @@ import {
     }`,
     `.mmCont {
       overflow: auto;
-      border: thin solid lightblue;
+      border: 1px solid lightblue;
       position: fixed;
       top: 60px;
       bottom: 10px;

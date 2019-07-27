@@ -185,10 +185,10 @@ export class MapComponent {
         // local: ctx, k, upDown, me
         function ladderAnime(x: number, y: number) {
             ctx.fillStyle = STEP_COLOR;
-            const n = 3, h = 3, w = 5 * h, d = 5;
+            const n = 4, h = 3, w = 5 * h, d = 10;
             let i = 0;
             const t = setInterval(function() {
-                ctx.fillRect(x - w / 2, y - d - i * d * upDown, w, h);
+                ctx.fillRect(x - w / 2, y - i * d * upDown, w, h);
                 if (i == n) {
                     clearInterval(t);
                     me.redraw();

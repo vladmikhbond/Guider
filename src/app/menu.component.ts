@@ -80,8 +80,8 @@ export class Menu {
     @Input()
     width: string;
 
-    @Output()
-    open = new EventEmitter<null>();
+    // @Output()
+    // open = new EventEmitter<null>();
     @Output()
     close = new EventEmitter<string>();
 
@@ -95,7 +95,7 @@ export class Menu {
 
 
     menu_click() {
-        this.open.emit();
+        //this.open.emit();
     }
 
     item_click(tag: string) {

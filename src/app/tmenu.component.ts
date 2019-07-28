@@ -1,7 +1,3 @@
-/*
-
-закрывать по клавише esc
- */
 
 import {
   Component,
@@ -24,7 +20,6 @@ import {
       `.mmUpperItem, .mmItem {
       padding-top: 10px;
       text-align: center;
-      
       border-bottom: solid 1px black;
       height: 40px;
 
@@ -44,19 +39,16 @@ import {
       `.mmUpperCont {
       display: none;
       position: absolute;
-
     }`,
     `.mmCont {
       overflow: auto;
       border: 1px solid lightblue;
       position: fixed;
-      top: 60px;
+      top: 50px;
       bottom: 10px;
-
-
     }`,
       `ul {
-      padding-inline-start: 10px;
+      padding-inline-start: 5px;
       list-style-type: none;
       }`
   ],

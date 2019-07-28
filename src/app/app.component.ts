@@ -7,7 +7,7 @@ const SCALE_FACTOR = 1.2;
 @Component({
     selector: 'guider',
     styles: [`
-        #dash {
+        .dash {
             width: 100%;
             min-width: 320px;
             text-align: center;
@@ -37,15 +37,11 @@ const SCALE_FACTOR = 1.2;
         }
     `],
     template: `
-        <div id="dash">
+        <div class="dash">
             <app-tmenu [selTag]="fromTag" [upperItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
                        (itemSelected)="from($event)"></app-tmenu>
             <app-tmenu [selTag]="toTag" [upperItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
                        (itemSelected)="to($event)"></app-tmenu>
-
-            <!--            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>-->
-            <!--            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth"></menu2-tags>-->
-
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
             <button mat-stroked-button (click)="changeScale(false)" class="more">-</button>
@@ -104,7 +100,11 @@ export class AppComponent
         {
             res.push(tags.filter(t => t.startsWith(this.upItems[i])))
         }
-        res.push(tags.filter(t => !t.startsWith("1") && !t.startsWith("2") && !t.startsWith("3") && !t.startsWith("4")));
+        res.push(tags.filter(t =>
+            !t.startsWith(this.upItems[0]) &&
+            !t.startsWith(this.upItems[1]) &&
+            !t.startsWith(this.upItems[2]) &&
+            !t.startsWith(this.upItems[3])));
         return res;
     }
 
@@ -139,15 +139,16 @@ export class AppComponent
         }
     }
 
-    private delayedAutoscroll() {
-        setTimeout(() => {
-            this.child.autoscroll(this.child.path[0])
-        }, 0);
-    }
+    // private delayedAutoscroll() {
+    //     setTimeout(() => {
+    //         this.child.autoscroll(this.child.path[0])
+    //     }, 0);
+    // }
 
     go() {
-        if (this.child.path.length > 0)
+        if (this.child.path.length > 0) {
             this.child.step();
+        }
     }
 
     help() {

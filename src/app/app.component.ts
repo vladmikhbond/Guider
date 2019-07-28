@@ -78,9 +78,6 @@ export class AppComponent
     @ViewChild(MapComponent, {static: false})
     child: MapComponent;
 
-    // fromTags: string[];
-    // toTags: string[];
-    // boxWidth: string;
     mapDisplay: string = 'block';
     helpDisplay: string = 'none';
     fromTag: string = "ВХОД";
@@ -92,9 +89,6 @@ export class AppComponent
     toItemLists: string[][];
 
     constructor(private guiderService: GuiderService){
-        // from-to definition
-        // this.fromTags = guiderService.getFromTags();
-        // this.toTags = guiderService.getToTags();
         //
         this.fromItemLists = this.getItemLists(guiderService.getFromTags());
         this.toItemLists = this.getItemLists(guiderService.getToTags());

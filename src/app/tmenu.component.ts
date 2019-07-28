@@ -64,10 +64,11 @@ import {
     <button class="mmRoot" (click)="onRootClick()" #rootButton>{{selTag}}</button>
     <div class="mmUpperCont" [style.left]="mmUpperContStyleLeft" #rootCont>
 
-      <ul *ngFor="let i of upperIndeces">
+      <ul *ngFor="let upperItem of upperItems; let i = index;">
 
-        <li class="mmUpperItem" (click)="onUpperItemClick(i)">{{upItems[i]}}</li>
-        <ul class="mmCont" [style.display]="mmContStyleDisplays[i]" [style.left]="mmContStyleLeft" [style.top]="mmContStyleTop">
+        <li class="mmUpperItem" (click)="onUpperItemClick(i)">{{upperItem}}</li>
+        <ul class="mmCont" [style.display]="mmContStyleDisplays[i]" [style.left]="mmContStyleLeft"
+            [style.top]="mmContStyleTop">
           <li class="mmItem" *ngFor="let item of itemLists[i]" (click)="onItemClick(item)">{{item}}</li>
         </ul>
 
@@ -85,17 +86,15 @@ export class TmenuComponent {
   @Input()
   selTag = 'Menu';
   @Input()
-  set upItems(v: string[]) {
+  set upperItems(v: string[]) {
     this.upItemsFld = v;
     // do menus invisible & prepare indices array
     v.forEach(() => this.mmContStyleDisplays.push('none'));
-    this.upperIndeces = v.map((x: string, i: number) => i);
   }
-  get upItems(): string[] {
+  get upperItems(): string[] {
     return this.upItemsFld;
   }
   private upItemsFld: string[] = [];
-  private upperIndeces: number[] = [];
   @Input()
   itemLists: string[][] = [];
 

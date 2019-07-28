@@ -38,13 +38,13 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div id="dash">
-            <app-tmenu [selTag]="fromTag" [upItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
+            <app-tmenu [selTag]="fromTag" [upperItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
                        (itemSelected)="from($event)"></app-tmenu>
-            <app-tmenu [selTag]="toTag" [upItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
+            <app-tmenu [selTag]="toTag" [upperItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
                        (itemSelected)="to($event)"></app-tmenu>
 
-<!--            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>-->
-<!--            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth"></menu2-tags>-->
+            <!--            <menu2-tags [tags]="fromTags" [selTag]="fromTag" (close)="from($event)" [width]="boxWidth" ></menu2-tags>-->
+            <!--            <menu2-tags [tags]="toTags" [selTag]="'куда?'" (close)="to($event)" [width]="boxWidth"></menu2-tags>-->
 
             <button mat-stroked-button (click)="go()">Go</button>
             <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>

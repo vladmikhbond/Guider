@@ -82,7 +82,7 @@ export class TmenuComponent {
   @Input()
   set upperItems(v: string[]) {
     this.upItemsFld = v;
-    // do menus invisible & prepare indices array
+    // do menus invisible
     v.forEach(() => this.mmContStyleDisplays.push('none'));
   }
   get upperItems(): string[] {

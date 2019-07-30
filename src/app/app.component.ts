@@ -22,6 +22,7 @@ const SCALE_FACTOR = 1.2;
             height: 50px;
             background-color: aqua;
             padding: 0;
+            border: black 1px solid;
         }
         .more {
             width: 35px;
@@ -38,15 +39,17 @@ const SCALE_FACTOR = 1.2;
     `],
     template: `
         <div class="dash">
-            <app-tmenu [selTag]="fromTag" [upperItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
+            <span [style.display]="dashDisplay">
+            <app-tmenu [selTag]="fromTag" [width]="menuWidth" [upperItems]="upItems" [itemLists]="fromItemLists" (open)="openMenu()"
                        (itemSelected)="from($event)"></app-tmenu>
-            <app-tmenu [selTag]="toTag" [upperItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
+            <app-tmenu [selTag]="toTag" [width]="menuWidth" [upperItems]="upItems" [itemLists]="toItemLists" (open)="openMenu()"
                        (itemSelected)="to($event)"></app-tmenu>
-            <button mat-stroked-button (click)="go()">Go</button>
-            <button mat-stroked-button (click)="changeScale(true)" class="more">+</button>
-            <button mat-stroked-button (click)="changeScale(false)" class="more">-</button>
-            <button mat-stroked-button (click)="help()">Help</button>
-        </div>
+            <button (click)="go()">Go</button>
+            <button (click)="changeScale(true)" class="more">+</button>
+            <button (click)="changeScale(false)" class="more">-</button>
+            </span>
+            <button (click)="help()">Help</button>
+        
 
         <map [style.display]="mapDisplay"></map>
 
@@ -76,6 +79,7 @@ export class AppComponent
 
     mapDisplay: string = 'block';
     helpDisplay: string = 'none';
+    dashDisplay: string = 'inline';
     fromTag: string = "ВХОД";
     toTag: string  =  "?";
 
@@ -83,15 +87,16 @@ export class AppComponent
     upItems = ["1", "2", "3", "4", "и др."];
     fromItemLists: string[][];
     toItemLists: string[][];
+    private menuWidth: string;
 
     constructor(private guiderService: GuiderService){
         //
         this.fromItemLists = this.getItemLists(guiderService.getFromTags());
         this.toItemLists = this.getItemLists(guiderService.getToTags());
 
-        // buttons layout
-        // let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
-        // this.boxWidth = width + 'px';
+        // menu button width 
+        let width = ((screen.availWidth - 2 * 50 - 2 * 35 - 4) / 2) | 0;
+        this.menuWidth = width + 'px';
     }
 
     private getItemLists(tags: string[] ): string[][] {
@@ -139,12 +144,6 @@ export class AppComponent
         }
     }
 
-    // private delayedAutoscroll() {
-    //     setTimeout(() => {
-    //         this.child.autoscroll(this.child.path[0])
-    //     }, 0);
-    // }
-
     go() {
         if (this.child.path.length > 0) {
             this.child.step();
@@ -152,8 +151,15 @@ export class AppComponent
     }
 
     help() {
-        this.mapDisplay = this.mapDisplay == 'none' ? 'block' : 'none';
-        this.helpDisplay = this.helpDisplay == 'none' ? 'block' : 'none';
+        if (this.mapDisplay === 'none') {
+            this.mapDisplay = 'block';
+            this.helpDisplay = 'none';
+            this.dashDisplay = 'inline';
+        } else {
+            this.mapDisplay = 'none';
+            this.helpDisplay = 'block';
+            this.dashDisplay = 'none';
+        }
     }
 
 

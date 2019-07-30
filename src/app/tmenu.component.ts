@@ -35,6 +35,8 @@ import {
       `.mmRoot {
       height: 50px;
       border: black 1px solid;
+      min-width: 50px;
+      max-width: 200px;
      }`,
       `.mmUpperCont {
       display: none;
@@ -53,7 +55,7 @@ import {
       }`
   ],
   template: `
-    <button class="mmRoot" (click)="onRootClick()" #rootButton>{{selTag}}</button>
+    <button class="mmRoot" [style.width]="width" (click)="onRootClick()" #rootButton>{{selTag}}</button>
     <div class="mmUpperCont" [style.left]="mmUpperContStyleLeft" #rootCont>
 
       <ul *ngFor="let upperItem of upperItems; let i = index;">
@@ -89,6 +91,8 @@ export class TmenuComponent {
   private upItemsFld: string[] = [];
   @Input()
   itemLists: string[][] = [];
+  @Input()
+  width: string;
 
   mmContStyleDisplays: string[] = [];
   mmUpperContStyleLeft: string;

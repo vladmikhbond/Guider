@@ -9,7 +9,7 @@ export class Vertex
 
     adjacent: Vertex[] = [];
 
-    dist: number;
+    dist = Number.MAX_VALUE;
     prev: Vertex;
     isStable = false;
 
